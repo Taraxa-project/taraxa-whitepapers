@@ -1,5 +1,5 @@
-# Taraxa Whitepaper
-## Building IoT’s Trust Anchor
+# Taraxa Whitepaper - Building IoT’s Trust Anchor
+# Test Heading
 
 version: 0.9.3
 
@@ -18,3 +18,4 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 * Trustless light nodes that can verify what it’s been told by full nodes 
 
 
+[test link to anchor](#Test-Heading)
