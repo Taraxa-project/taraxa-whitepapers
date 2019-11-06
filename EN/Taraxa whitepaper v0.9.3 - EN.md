@@ -18,6 +18,7 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 * Trustless light nodes that can verify what it’s been told by full nodes 
 
 
+<br /><br /><br /><br />
 ## Table of Contents
 
 
@@ -78,9 +79,55 @@ There are several blockchain projects purported to target the IoT space. Here we
 
 
 Many important IoT use cases such as data anchoring are stateless transactions, whereby the key figure of merit for the blockchain network is simply block inclusion (see Section 4) instead of full finalization. Taraxa’s unique topology allows for a decoupling of inclusion as an asynchronous and independent network activity versus finalization & execution, allowing devices to get much faster feedback without having to wait for the remaining parts of the consensus. 
-Device transactions also heavily depend on smart contracts. Taraxa combined the benefits of a fast-advancing DAG topology and the instant and fair finality of a VRF-driven PBFT process (see Section 4), giving smart contracts with state-dependent logic a definitive guarantee of immutability – not a probabilistic one. 
-To support the role of smart contracts in device transactions, Taraxa’s unique use of speculative concurrency (see Section 5) in the construction of a concurrent VM drastically boosts execution speed, saving precious time for the entire network of full validating nodes. 
+
+Device transactions also heavily depend on smart contracts. Taraxa combined the benefits of a fast-advancing DAG topology and the instant and fair finality of a VRF-driven PBFT process (see Section 4), giving smart contracts with state-dependent logic a definitive guarantee of immutability – not a probabilistic one.
+
+To support the role of smart contracts in device transactions, Taraxa’s unique use of speculative concurrency (see Section 5) in the construction of a concurrent VM drastically boosts execution speed, saving precious time for the entire network of full validating nodes.
+
 All networks evolve over time, and the best networks smoothly adapts to these evolutionary changes. Much of blockchain network’s evolution instead of happening automatically have taken place in online forums and offline meetings, often regressing into vicious and nonproductive disputes. Taraxa’s protocol is designed to seamlessly reach consensus on key network behavioral attributes such as block generation rate, block size, and shard jurisdictions, without all the fuss and drama. 
+
+
+<br /><br /><br /><br />
+## 3. Taraxa Architecture  
+
+### 3.1 Design Principles
+
+Taraxa abides by the following set of design principles. 
+
+* **Maximum concurrency**: Taraxa maximizes both horizontal as well as vertical concurrency to be inclusive of all work done and make sure all hardware resources are fully leveraged in transaction processing & validation. 
+
+* **Minimum waste**: every node only does the work that’s necessary, when they’re randomly designated to do so, with all work done included, minimizing overlaps and waste, and all done with almost no coordination overhead. 
+
+* **Device-conscious**: Taraxa assumes that most of the nodes on the chain will be IoT gateways, with our protocol built to reflect the processing, memory, and bandwidth limitations of these devices. We will also provide hardware reference designs and work with our partners to integrate them into their systems. 
+
+* **Developer-friendly**: Taraxa aims for maximum backwards-compatibility by adopting an EVM-compatible toolchain to ensure that most developers do not need to learn a new set of languages & tools. Over time, Taraxa will adopt the WebAssembly compilation target to provide a more provably secure execution environment. 
+
+
+### 3.2 Ledger Architecture Overview
+
+The Taraxa ledger roughly takes the following architectural approach. More details are found in Section 4 and Section 5. 
+
+![image(test.png)]
+ 
+_Figure 1: Taraxa Ledger Architecture_
+
+Taraxa’s core architecture is divided into two parts, a block directed acyclic graph (DAG) at the top and a Finalization Chain at the bottom. 
+
+The block DAG is where blocks are proposed, validated, but not executed. This allows the DAG to grow quickly and decouples block inclusion from finalization and execution, a unique advantage to many stateless IoT use cases. 
+
+The DAG is divided into Periods, bounded by Period Blocks that are finalized through a VRF-enabled PBFT voting process. This voting process is governed by sparse blocks on a separate Finalization Chain. Once a Period Block has been finalized, all blocks belonging between two finalized Period Blocks have deterministic ordering as defined by the GHOST [4] rule. 
+
+
+### 3.3 Concurrent VM Architecture Overview 
+
+Taraxa’s concurrent VM consists of the following components. 
+
+ 
+_Figure 2: Taraxa Concurrent VM Architecture_
+
+There are two phases: schedule discovery and validation. 
+During discovery, the Scheduler takes input in the form of a block, instantiates multiple instances of the VM. The Conflict Detector monitors all read / write operations occurring while the instances are running, keeping a log of state changes and terminating instances that conflict, scheduling them for sequential execution, resulting in a Concurrent Schedule consisting of a concurrent set followed by a sequential set. In some instances, the conflicts are reported not directly by the VM instances but by a set of Concurrent Objects designed to be conflict-aware. The Concurrent Schedules are sent to the consensus layer, so the network reaches agreement. 
+During validation, the remaining nodes (most nodes that were not part of the consensus process) now follow the agreed-upon Concurrent Schedules to rapidly execute the blocks, resulting in significant time savings for the entire network overall. 
 
 
 
