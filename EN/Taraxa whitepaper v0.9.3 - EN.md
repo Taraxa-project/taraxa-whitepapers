@@ -65,6 +65,9 @@ Blockchain can eventually enable devices to trade data with one another, enablin
 Integrating blockchain technology into IoT would prove a significant boon to the space, enabling more data to be more freely shared and traded, triggering an explosive emergence of hitherto unthought-of applications. 
 
 
+
+
+
 ## 2. Review of Existing Projects
 
 There are several blockchain projects purported to target the IoT space. Here we take a brief look at a few well-known projects. 
