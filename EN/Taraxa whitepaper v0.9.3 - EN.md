@@ -5,7 +5,8 @@ version: 0.9.3
 Disclaimer: this white paper is intended as a preliminary technical overview of the Taraxa protocol and ecosystem and is not meant to be comprehensive or fully finalized.
 
 
-# Abstract
+<br /><br /><br /><br />
+## Abstract
 
 The advancement of IoT ecosystems has been consistently held back by technical challenges in security, maintenance, data provenance, and incompatible standards, as well as by business challenges in a generally lacking or lackluster use cases, strategically-risky platform lock-ins, and intentionally-siloed data management, and an increasing social awareness and demand for better privacy protection as devices become ubiquitous. Blockchain technology can help to address many of these challenges by building trust anchors into the ecosystem, thereby granting devices operational and economic independence, an awareness for asset ownership, and the capability to freely trade with one another. 
 In this whitepaper, we introduce Taraxa, a public ledger focused on building trust anchors for IoT ecosystems with the following innovations, 
@@ -17,15 +18,12 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 * Trustless light nodes that can verify what it’s been told by full nodes 
 
 
-# Table of Contents
+## Table of Contents
 
 
 
-Demographic data often allows for re-identification [[1]](#1).
-
-
-
-# 1. Introduction
+<br /><br /><br /><br />
+## 1. Introduction
 
 ### 1.1 The Promise of IoT
 
@@ -65,9 +63,7 @@ Blockchain can eventually enable devices to trade data with one another, enablin
 Integrating blockchain technology into IoT would prove a significant boon to the space, enabling more data to be more freely shared and traded, triggering an explosive emergence of hitherto unthought-of applications. 
 
 
-
-
-
+<br /><br /><br /><br />
 ## 2. Review of Existing Projects
 
 There are several blockchain projects purported to target the IoT space. Here we take a brief look at a few well-known projects. 
@@ -87,6 +83,8 @@ To support the role of smart contracts in device transactions, Taraxa’s unique
 All networks evolve over time, and the best networks smoothly adapts to these evolutionary changes. Much of blockchain network’s evolution instead of happening automatically have taken place in online forums and offline meetings, often regressing into vicious and nonproductive disputes. Taraxa’s protocol is designed to seamlessly reach consensus on key network behavioral attributes such as block generation rate, block size, and shard jurisdictions, without all the fuss and drama. 
 
 
+
+<br /><br /><br /><br />
 ## References
 
 
