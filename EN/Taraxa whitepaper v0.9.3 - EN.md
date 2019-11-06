@@ -2,7 +2,7 @@
 
 version: 0.9.3
 
-Disclaimer: this white paper is intended as a preliminary technical overview of the Taraxa protocol and ecosystem and is not meant to be comprehensive or fully finalized.
+**Disclaimer**: this white paper is intended as a preliminary technical overview of the Taraxa protocol and ecosystem and is not meant to be comprehensive or fully finalized.
 
 
 <br /><br /><br /><br />
@@ -295,48 +295,61 @@ _Figure 7: Block generation limitation and transaction jurisdiction definition t
 
 To limit block generation, Fuzzy Sharding allows each proposer to independently calculate how many blocks they are eligible to generate. For each new block added to the block DAG, each proposer signs the block hash and then hashes the resulting signature, creating a ticket. This ticket is only valid if it falls below a certain threshold, which is defined by a network parameter and increased (increases the probability of eligibility) by the proposer’s stake (or delegated stake). To mitigate a malicious proposer saving up tickets and then flooding an entire Period with its blocks, these tickets have an expiration of two (2) Periods, in that a ticket generated in P0 is valid for P0 and P1, but not beyond that. They are valid for two Periods just to make sure that at the boundary between Periods, valid tickets are not invalidated due to latency issues on hearing the next confirmed Period Block. These tickets are “virtual”, in that they are not included in any blocks as they could be easily validated by nodes other than the proposer by performing the exact same operation to ensure eligibility of the proposer and, by extension, the validity of the block. 
 
-Here’s the simple ticket calculation algorithm and is easily validated by another node observer. 
+Here’s the simple ticket calculation algorithm and is easily validated by another node observer.
 
-Algorithm 4: calculate the tickets available for the current Period 
+```
+--------------------------------------------------------------------------------
+Algorithm 4: calculate the tickets available for the current Period
+--------------------------------------------------------------------------------
 Input: T – set of blocks from the previous finalized and the current non-finalized Period, threshold – threshold under which the ticket is a winner, stake – proposer’s coin stake, β – threshold modifier 
 Output: winners – dictionary list of winning tickets 
-  function FINDWINNINGTICKETS (T, threshold, stake, β):
-      for each block in T:
-          ticket ← hash of the node’s signature of the block’s ID
-          if ticket < threshold · stake · β then 
-              add (block, ticket) to winners
-      return winners
-  end function 
+  1:  function FINDWINNINGTICKETS (T, threshold, stake, β):
+  2:    for each block in T:
+  3:      ticket ← hash of the node’s signature of the block’s ID
+  4:      if ticket < threshold · stake · β then 
+  5:        add (block, ticket) to winners
+  6:    return winners
+  7:  end function
+--------------------------------------------------------------------------------
+```
 
 Note that in Algorithm 4, the threshold modifier β should be positively-correlated with the maximum hash and negatively-correlated with the total number of coins.
+
 To define transaction jurisdiction, a proposer follows an algorithm that places it into a specific range of transaction addresses (or accounts) for which it has jurisdiction over. In other words, the proposer is only eligible to pack transactions from addresses within its jurisdiction into a new block. A proposer first signs an Anchor Block and then hashes the signature, receiving a certificate. This certificate is then mapped into the pool of pending transactions to see which ones the current node is eligible for. This could be done via a simple modulus operation, for example, as described in the simple algorithm below. 
 
+```
+--------------------------------------------------------------------------------
 Algorithm 5: find transactions within the proposer node’s jurisdiction
+--------------------------------------------------------------------------------
 Input: P – pool of pending transactions, N – number of jurisdictional shards, past_period_block_id – the id of a past period block (e.g., the past 2nd from the current non-finalized Period) 
 Output: available_tx – subset of pending transactions this node has jurisdiction over 
-  function FINDTXJURISDICTIONSET (P, N):    
-      jurisdiction_cert ← hash of the proposing node’s signature of past_period_block_id
-      for each transaction in P:
-          if (transaction modulo N) equals (jurisdiction_cert modulo N) then
-              add transaction to available_tx
-      return available_tx
-  end function 
+  1:  function FINDTXJURISDICTIONSET (P, N):    
+  2:    jurisdiction_cert ← hash of the proposing node’s signature of past_period_block_id
+  3:    for each transaction in P:
+  4:      if (transaction modulo N) equals (jurisdiction_cert modulo N) then
+  5:        add transaction to available_tx
+  6:    return available_tx
+  7:  end function
+--------------------------------------------------------------------------------
+```
 
-Note that the block id of the past Period block and its signature need to be part of the block to act as proof to help other nodes to validate whether the correct jurisdiction has been used. For each such jurisdiction proof generated, it will remain valid for two (2) Periods, for the same reason the block generation eligibility ticket expiration to account for fuzzy boundary conditions between Periods due to propagation latency. 
-Also note that, the implicit definition of work load in this algorithm is simply the transaction count. This is a reasonable measure of load during block generation since, in the Taraxa protocol, blocks on the block DAG are not executed immediately means that the load is purely based on validation, which is a relatively simple and equal workload across coin and smart contract transactions. 
+Note that the block id of the past Period block and its signature need to be part of the block to act as proof to help other nodes to validate whether the correct jurisdiction has been used. For each such jurisdiction proof generated, it will remain valid for two (2) Periods, for the same reason the block generation eligibility ticket expiration to account for fuzzy boundary conditions between Periods due to propagation latency.
+
+Also note that, the implicit definition of work load in this algorithm is simply the transaction count. This is a reasonable measure of load during block generation since, in the Taraxa protocol, blocks on the block DAG are not executed immediately means that the load is purely based on validation, which is a relatively simple and equal workload across coin and smart contract transactions.
+
 In both cases, there is no coordination between the nodes on block proposal eligibility and transaction jurisdiction and a certain amount of tolerance or “fuzziness” is built into the validation, thereby reducing the associated network overhead and attack surface. 
 
+<br /><br />
+### 4.5 Adaptive Protocol
 
-Adaptive Protocol 
-Network conditions are constantly changing, and the rules governing protocol behaviors should likewise adapt – automatically – not via offline meetings, online forums, or instant messaging. 
-Since Taraxa already uses a period fast PBFT process to confirm Period Blocks, these blocks could easily contain updated parameters based on recent network conditions, parameters such as block generation rate, block size, VRF committee sizes, or even networking protocols. These parameters could all be calculated and determined dynamically on the fly based on real-time network conditions, hence minimizing the need for hard forks and flame wars. 
-For example, ideally speaking, the expected value of the product of the number of eligible block generators and number of transaction jurisdictions should be ~1. If the product is significantly less than 1, then the network suffers from a high orphan rate. If it is significantly higher than 1, then the network has poor block efficiency. To ensure the network stays at and around optimum performance requires continuous parametric calibration and consensus on these calibrations. 
+Network conditions are constantly changing, and the rules governing protocol behaviors should likewise adapt – automatically – not via offline meetings, online forums, or instant messaging.
+
+Since Taraxa already uses a period fast PBFT process to confirm Period Blocks, these blocks could easily contain updated parameters based on recent network conditions, parameters such as block generation rate, block size, VRF committee sizes, or even networking protocols. These parameters could all be calculated and determined dynamically on the fly based on real-time network conditions, hence minimizing the need for hard forks and flame wars.
+
+For example, ideally speaking, the expected value of the product of the number of eligible block generators and number of transaction jurisdictions should be \~1. If the product is significantly less than 1, then the network suffers from a high orphan rate. If it is significantly higher than 1, then the network has poor block efficiency. To ensure the network stays at and around optimum performance requires continuous parametric calibration and consensus on these calibrations.
+
+
 The machine learning algorithms that govern how these parameters are calculated are an ongoing research topic for Taraxa, and we will release our findings as we move forward. 
-
-
-
-
-
 
 
 
