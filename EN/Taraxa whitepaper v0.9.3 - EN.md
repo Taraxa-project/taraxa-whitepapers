@@ -224,7 +224,7 @@ Output: anchor_chain – a set (that preserves insertion order) of blocks that f
   1:  function FINDANCHORCHAIN (P, W):
   2:    current_block ← P
   3:    while current_block has children:
-  4:       children_weights ← map (block, weights) from current_block’s children ∩W on block references
+  4:       children_weights ← map (block, weights) from current_block’s children ∩ W on block references
   5:        heaviest_child ← the block with the maximum weight in children_weights
   6:        add heaviest_child to the end of anchor_chain
   7:        current_block ← heaviest_child
