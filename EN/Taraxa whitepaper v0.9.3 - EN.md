@@ -210,23 +210,29 @@ Output: W – a dictionary of blocks and weights for the current non-finalized P
 --------------------------------------------------------------------------------
 ```
 
+After the weights are calculated for the currently non-finalized Period, the Anchor Chain is constructed from the block DAG. The Anchor Chain is used to later determine total ordering between two Period Blocks, but here it is used to determine the heaviest tip on the block DAG, which is where the Anchor Chain terminates.
 
-After the weights are calculated for the currently non-finalized Period, the Anchor Chain is constructed from the block DAG. The Anchor Chain is used to later determine total ordering between two Period Blocks, but here it is used to determine the heaviest tip on the block DAG, which is where the Anchor Chain terminates. 
 Below is an algorithm which determines the Anchor Chain. Here we assume that, unlike a typical DAG, there exist forward pointers from parent to the child block that has a GHOST pointer pointing back to it. In actual implementation such relationships are generated and discarded at runtime. 
 
-Algorithm 2: calculate the Anchor Chain 
+
+```
+--------------------------------------------------------------------------------
+Algorithm 2: calculate the Anchor Chain
+--------------------------------------------------------------------------------
 Input: P – previous Period Block, W – a map of blocks and weights for the current non-finalized Period
 Output: anchor_chain – a set (that preserves insertion order) of blocks that form the Anchor Chain 
-  function FINDANCHORCHAIN (P, W):
-      current_block ← P
-      while current_block has children:
-          children_weights ← map (block, weights) from current_block’s children ∩W on block references
-          heaviest_child ← the block with the maximum weight in children_weights
-          add heaviest_child to the end of anchor_chain
-          current_block ← heaviest_child
-      end while
-      return anchor_chain
-  end function 
+  1:  function FINDANCHORCHAIN (P, W):
+  2:    current_block ← P
+  3:    while current_block has children:
+  4:       children_weights ← map (block, weights) from current_block’s children ∩W on block references
+  5:        heaviest_child ← the block with the maximum weight in children_weights
+  6:        add heaviest_child to the end of anchor_chain
+  7:        current_block ← heaviest_child
+  8:    end while
+  9:    return anchor_chain
+  10: end function
+--------------------------------------------------------------------------------
+```
 
 With the Anchor Chain calculated, the heaviest tip in the block DAG is simply the final element of the Anchor Chain, which the newly proposed block will reference with the GHOST pointer. 
 Total ordering becomes completely deterministic once the Anchor Chain is calculated. Traverse the block DAG starting from the previously-finalized Period Block down the Anchor Chain, and for every Anchor Block, find its parents (excluding the previous Anchor Block) which constitutes an epoch. Topologically sort the epoch with tie breaking via the lowest block hash (e.g., tie breaking for blocks 3 and 4 in Figure 6) and keep moving down the Anchor Chain until it has been exhausted. 
