@@ -26,6 +26,7 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 <br /><br /><br /><br />
 ## 1. Introduction
 
+<br /><br />
 ### 1.1 The Promise of IoT
 
 Long has the prospect of billions upon billions of intelligent, connected, and autonomous devices freely communicating and coordinating with one another been held up as an unquestioned vision for the future. The confluence and rapid advancement of technologies such as ever-more precise sensors and actuators, cloud computing, and near-ubiquitous connectivity have all made this vision seem increasingly likely. The market is full of audacious predictions of the world full of trillions of connected devices and the market for IoT reaching hundreds of trillions of dollars in market size. 
@@ -46,6 +47,7 @@ With the rapid proliferation of digitized technologies, the public at large has 
 These and many more obstacles prevent the rapid adoption and value actualization of IoT in general. 
 
 
+<br /><br />
 ### 1.2 How Blockchain Technology Could Help 
 Blockchain technology (for this section the term blockchain is used to refer generally to decentralized ledger technologies) has given us a tool for a decentralized set of participants to collaborate, trade, and compete without preestablished trust, radically diminishing or in many cases completely removing the need for centralized systems to provide guarantees and coordination. This decentralization has several interesting consequences as applicable to IoT. 
 
@@ -90,6 +92,7 @@ All networks evolve over time, and the best networks smoothly adapts to these ev
 <br /><br /><br /><br />
 ## 3. Taraxa Architecture  
 
+<br /><br />
 ### 3.1 Design Principles
 
 Taraxa abides by the following set of design principles. 
@@ -103,11 +106,11 @@ Taraxa abides by the following set of design principles.
 * **Developer-friendly**: Taraxa aims for maximum backwards-compatibility by adopting an EVM-compatible toolchain to ensure that most developers do not need to learn a new set of languages & tools. Over time, Taraxa will adopt the WebAssembly compilation target to provide a more provably secure execution environment. 
 
 
+<br /><br />
 ### 3.2 Ledger Architecture Overview
 
 The Taraxa ledger roughly takes the following architectural approach. More details are found in Section 4 and Section 5. 
 
-![image](test.png)
  
 _Figure 1: Taraxa Ledger Architecture_
 
@@ -117,7 +120,7 @@ The block DAG is where blocks are proposed, validated, but not executed. This al
 
 The DAG is divided into Periods, bounded by Period Blocks that are finalized through a VRF-enabled PBFT voting process. This voting process is governed by sparse blocks on a separate Finalization Chain. Once a Period Block has been finalized, all blocks belonging between two finalized Period Blocks have deterministic ordering as defined by the GHOST [4] rule. 
 
-
+<br /><br />
 ### 3.3 Concurrent VM Architecture Overview 
 
 Taraxa’s concurrent VM consists of the following components. 
@@ -135,7 +138,3 @@ During validation, the remaining nodes (most nodes that were not part of the con
 ## References
 
 
-
-
-## References
-<a id="1">[1]</a> Rocher, L., Hendrickx, J. M., & De Montjoye, Y. A. (2019). Estimating the success of re-identifications in incomplete datasets using generative models. Nature communications, 10(1), 1-9.
