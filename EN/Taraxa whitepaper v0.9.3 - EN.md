@@ -187,7 +187,9 @@ _Figure 5: Anchor Chain constructed inside the block DAG_
 Here’s a breadth-first algorithm which calculates weights for a yet-to-be-finalized Period, which is executed whenever a new block is being proposed. 
 
 ```
-Algorithm 1: calculate the weights of each block in a non-finalized Period  
+--------------------------------------------------------------------------------
+Algorithm 1: calculate the weights of each block in a non-finalized Period
+--------------------------------------------------------------------------------
 Input: S – a set of tips visible to the node
 Output: W – a dictionary of blocks and weights for the current non-finalized Period
   1:  function CALCULATEWEIGHTS (S):
@@ -205,6 +207,7 @@ Output: W – a dictionary of blocks and weights for the current non-finalized P
   13:        parent_layer ← {empty set}
   14:   return W
   15: end function
+--------------------------------------------------------------------------------
 ```
 
 
