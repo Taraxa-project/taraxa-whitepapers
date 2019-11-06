@@ -186,6 +186,7 @@ _Figure 5: Anchor Chain constructed inside the block DAG_
 
 Here’s a breadth-first algorithm which calculates weights for a yet-to-be-finalized Period, which is executed whenever a new block is being proposed. 
 
+```
 **Algorithm 1**: calculate the weights of each block in a non-finalized Period  
 **Input**: S – a set of tips visible to the node
 **Output**: W – a dictionary of blocks and weights for the current non-finalized Period
@@ -204,6 +205,7 @@ Here’s a breadth-first algorithm which calculates weights for a yet-to-be-fina
 	13:		        parent_layer ← {empty set}
 	14:		    **return** W
 	15: 	**end function**
+```
 
 
 After the weights are calculated for the currently non-finalized Period, the Anchor Chain is constructed from the block DAG. The Anchor Chain is used to later determine total ordering between two Period Blocks, but here it is used to determine the heaviest tip on the block DAG, which is where the Anchor Chain terminates. 
