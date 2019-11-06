@@ -107,7 +107,7 @@ Taraxa abides by the following set of design principles.
 
 The Taraxa ledger roughly takes the following architectural approach. More details are found in Section 4 and Section 5. 
 
-![image(test.png)]
+![image](test.png)
  
 _Figure 1: Taraxa Ledger Architecture_
 
