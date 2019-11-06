@@ -1,5 +1,5 @@
 # Taraxa Whitepaper
-### Building IoT’s Trust Anchor
+## Building IoT’s Trust Anchor
 
 version: 0.9.3
 
