@@ -187,24 +187,24 @@ _Figure 5: Anchor Chain constructed inside the block DAG_
 Here’s a breadth-first algorithm which calculates weights for a yet-to-be-finalized Period, which is executed whenever a new block is being proposed. 
 
 ```
-**Algorithm 1**: calculate the weights of each block in a non-finalized Period  
-**Input**: S – a set of tips visible to the node
-**Output**: W – a dictionary of blocks and weights for the current non-finalized Period
-	1:	**function** CALCULATEWEIGHTS (S):
-	2:		current_layer ← S
-	3: 		    **while** current_layer is not empty:
-	4: 		        **for each** block in current_layer:
-	5: 		            parent ← block’s heaviest parent block 
-	6: 		            **if** parent does not belong to a finalized Period then 
-	7:		                **if** parent is not in parent_layer then
-	8: 		                    add parent into parent_layer
-	9: 		                    insert parent into W with a weight of 1
-	10:		                **else**
-	11:		                    increment W(parent)’s weight by 1
-	12:		        current_layer ← parent_layer
-	13:		        parent_layer ← {empty set}
-	14:		    **return** W
-	15: 	**end function**
+Algorithm 1: calculate the weights of each block in a non-finalized Period  
+Input: S – a set of tips visible to the node
+Output: W – a dictionary of blocks and weights for the current non-finalized Period
+  1:  function CALCULATEWEIGHTS (S):
+  2:    current_layer ← S
+  3:      while current_layer is not empty:
+  4:        for each block in current_layer:
+  5:          parent ← block’s heaviest parent block 
+  6:          if parent does not belong to a finalized Period then 
+  7:            if parent is not in parent_layer then
+  8:              add parent into parent_layer
+  9:              insert parent into W with a weight of 1
+  10:            else
+  11:              increment W(parent)’s weight by 1
+  12:        current_layer ← parent_layer
+  13:        parent_layer ← {empty set}
+  14:   return W
+  15: end function
 ```
 
 
@@ -214,16 +214,16 @@ Below is an algorithm which determines the Anchor Chain. Here we assume that, un
 Algorithm 2: calculate the Anchor Chain 
 Input: P – previous Period Block, W – a map of blocks and weights for the current non-finalized Period
 Output: anchor_chain – a set (that preserves insertion order) of blocks that form the Anchor Chain 
-	function FINDANCHORCHAIN (P, W):
-	    current_block ← P
-	    while current_block has children:
-	        children_weights ← map (block, weights) from current_block’s children ∩W on block references
-	        heaviest_child ← the block with the maximum weight in children_weights
-	        add heaviest_child to the end of anchor_chain
-	        current_block ← heaviest_child
-	    end while
-	    return anchor_chain
-	end function 
+  function FINDANCHORCHAIN (P, W):
+      current_block ← P
+      while current_block has children:
+          children_weights ← map (block, weights) from current_block’s children ∩W on block references
+          heaviest_child ← the block with the maximum weight in children_weights
+          add heaviest_child to the end of anchor_chain
+          current_block ← heaviest_child
+      end while
+      return anchor_chain
+  end function 
 
 With the Anchor Chain calculated, the heaviest tip in the block DAG is simply the final element of the Anchor Chain, which the newly proposed block will reference with the GHOST pointer. 
 Total ordering becomes completely deterministic once the Anchor Chain is calculated. Traverse the block DAG starting from the previously-finalized Period Block down the Anchor Chain, and for every Anchor Block, find its parents (excluding the previous Anchor Block) which constitutes an epoch. Topologically sort the epoch with tie breaking via the lowest block hash (e.g., tie breaking for blocks 3 and 4 in Figure 6) and keep moving down the Anchor Chain until it has been exhausted. 
@@ -235,13 +235,13 @@ Figure 6: Total ordering of block DAG along the Anchor Chain
 Algorithm 3: calculate the total ordering of the block DAG  
 Input: anchor_chain – a set of blocks that form the Anchor Chain for the currently non-finalized Period
 Output: ordering – total ordering of the currently non-finalized Period 
-	function ORDERPERIOD (anchor_chain):
-	    for each anchor_block in anchor_chain:
-	        epoch ← set of parents for anchor_block, excluding the previous block in the anchor_chain
-	        sorted_epoch ← topologically-sorted epoch, with tie-breakers via lowest block hash
-	        add sorted_epoch to the end of ordering
-	    return ordering
-	end function 
+  function ORDERPERIOD (anchor_chain):
+      for each anchor_block in anchor_chain:
+          epoch ← set of parents for anchor_block, excluding the previous block in the anchor_chain
+          sorted_epoch ← topologically-sorted epoch, with tie-breakers via lowest block hash
+          add sorted_epoch to the end of ordering
+      return ordering
+  end function 
 
 
 Rapid Finalization
@@ -270,13 +270,13 @@ Here’s the simple ticket calculation algorithm and is easily validated by anot
 Algorithm 4: calculate the tickets available for the current Period 
 Input: T – set of blocks from the previous finalized and the current non-finalized Period, threshold – threshold under which the ticket is a winner, stake – proposer’s coin stake, β – threshold modifier 
 Output: winners – dictionary list of winning tickets 
-	function FINDWINNINGTICKETS (T, threshold, stake, β):
-	    for each block in T:
-	        ticket ← hash of the node’s signature of the block’s ID
-	        if ticket < threshold · stake · β then 
-	            add (block, ticket) to winners
-	    return winners
-	end function 
+  function FINDWINNINGTICKETS (T, threshold, stake, β):
+      for each block in T:
+          ticket ← hash of the node’s signature of the block’s ID
+          if ticket < threshold · stake · β then 
+              add (block, ticket) to winners
+      return winners
+  end function 
 
 Note that in Algorithm 4, the threshold modifier β should be positively-correlated with the maximum hash and negatively-correlated with the total number of coins.
 To define transaction jurisdiction, a proposer follows an algorithm that places it into a specific range of transaction addresses (or accounts) for which it has jurisdiction over. In other words, the proposer is only eligible to pack transactions from addresses within its jurisdiction into a new block. A proposer first signs an Anchor Block and then hashes the signature, receiving a certificate. This certificate is then mapped into the pool of pending transactions to see which ones the current node is eligible for. This could be done via a simple modulus operation, for example, as described in the simple algorithm below. 
@@ -284,13 +284,13 @@ To define transaction jurisdiction, a proposer follows an algorithm that places 
 Algorithm 5: find transactions within the proposer node’s jurisdiction
 Input: P – pool of pending transactions, N – number of jurisdictional shards, past_period_block_id – the id of a past period block (e.g., the past 2nd from the current non-finalized Period) 
 Output: available_tx – subset of pending transactions this node has jurisdiction over 
-	function FINDTXJURISDICTIONSET (P, N):    
-	    jurisdiction_cert ← hash of the proposing node’s signature of past_period_block_id
-	    for each transaction in P:
-	        if (transaction modulo N) equals (jurisdiction_cert modulo N) then
-	            add transaction to available_tx
-	    return available_tx
-	end function 
+  function FINDTXJURISDICTIONSET (P, N):    
+      jurisdiction_cert ← hash of the proposing node’s signature of past_period_block_id
+      for each transaction in P:
+          if (transaction modulo N) equals (jurisdiction_cert modulo N) then
+              add transaction to available_tx
+      return available_tx
+  end function 
 
 Note that the block id of the past Period block and its signature need to be part of the block to act as proof to help other nodes to validate whether the correct jurisdiction has been used. For each such jurisdiction proof generated, it will remain valid for two (2) Periods, for the same reason the block generation eligibility ticket expiration to account for fuzzy boundary conditions between Periods due to propagation latency. 
 Also note that, the implicit definition of work load in this algorithm is simply the transaction count. This is a reasonable measure of load during block generation since, in the Taraxa protocol, blocks on the block DAG are not executed immediately means that the load is purely based on validation, which is a relatively simple and equal workload across coin and smart contract transactions. 
