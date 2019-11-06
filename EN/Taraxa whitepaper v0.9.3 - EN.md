@@ -21,7 +21,7 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 
 
 
-
+Demographic data often allows for re-identification [[1]](#1).
 
 
 
@@ -86,5 +86,8 @@ All networks evolve over time, and the best networks smoothly adapts to these ev
 
 ## References
 
-### 1 
-K. Granville, "Facebook and Cambridge Analytica: What You Need to Know as Fallout Widens," The New York Times, 19 March 2018. [Online]. Available: https://www.nytimes.com/2018/03/19/technology/facebook-cambridge-analytica-explained.html. [Accessed 15 November 2018].
+
+
+
+## References
+<a id="1">[1]</a> Rocher, L., Hendrickx, J. M., & De Montjoye, Y. A. (2019). Estimating the success of re-identifications in incomplete datasets using generative models. Nature communications, 10(1), 1-9.
