@@ -30,7 +30,7 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 
 [4. Core Consensus](#4-Core-Consensus)
 
-[5.  Concurrent Smart Contracts](#5-Concurrent-Smart-Contracts)
+[5. Concurrent Smart Contracts](#5-Concurrent-Smart-Contracts)
 
 [6. Technical Roadmap](#6-Technical-Roadmap)
 
@@ -373,7 +373,7 @@ The machine learning algorithms that govern how these parameters are calculated 
 
 
 <br /><br /><br /><br />
-## 5.  Concurrent Smart Contracts 
+## 5. Concurrent Smart Contracts 
 
 <br /><br />
 ### 5.1 Brief Background
