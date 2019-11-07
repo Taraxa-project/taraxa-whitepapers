@@ -23,6 +23,12 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 
 <br /><br />
 [1. Introduction](#1-introduction)
+[2. Review of Existing Projects](#2-Review-of-Existing-Projects)
+[3. Taraxa Architecture](#3-Taraxa-Architecture)
+[4. Core Consensus](#4-Core-Consensus)
+[5.  Concurrent Smart Contracts](#5-Concurrent-Smart-Contracts)
+[6. Technical Roadmap](#6-Technical-Roadmap)
+[7. Economics](#7-Economics)
 
 
 <br /><br /><br /><br />
@@ -516,7 +522,7 @@ Addition of state-sharding sidechains for individual DApps, cross-chain transact
 
 
 <br /><br /><br /><br />
-## 7. Cryptoeconomics
+## 7. Economics
 
 The Taraxa token, a native token of the layer 1 Taraxa ledger, is used as a means of exchange as well as fuel in the Taraxa ecosystem and is critical to the operations of the ecosystem. Full nodes will need to be paid a fee to process the smart contracts, and the purchase of IoT data for example is facilitated using the Taraxa token. 
 A more comprehensive description of the ecosystem’s economic design will be published later and its summary will be integrated into this whitepaper. 
