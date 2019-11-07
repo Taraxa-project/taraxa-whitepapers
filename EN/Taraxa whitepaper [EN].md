@@ -132,6 +132,8 @@ The Taraxa ledger roughly takes the following architectural approach. More detai
 <br />
 
 ![image](Figure_1_[EN].png)
+
+<br />
 _Figure 1: Taraxa Ledger Architecture_
 
 <br />
