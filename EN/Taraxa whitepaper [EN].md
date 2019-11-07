@@ -143,7 +143,7 @@ The DAG is divided into Periods, bounded by Period Blocks that are finalized thr
 Taraxa’s concurrent VM consists of the following components. 
 
  
-_Figure 2: Taraxa Concurrent VM Architecture_
+<br />  ![image](Figure_2_[EN].png) <br />
 
 There are two phases: schedule discovery and validation. 
 
@@ -171,8 +171,7 @@ To increase TPS, the network could increase block size β and block generation r
 
 One elegantly simple approach is to abandon the single-chain approach and adopt an inclusive approach in the form of a DAG [[7]](#r7), or specifically a block DAG. In a block DAG, blocks could be proposed by multiple nodes and they would all be accepted if they were valid. Unlike in a single-chain topology, each block would reference not just a single parent, but multiple parents – in fact as many parents as the proposing node sees as tips of the current DAG. In such a DAG, there isn’t a hard tradeoff between TPS and security, as the network could reliably increase β without sacrificing security. The block DAG increases β by being naturally inclusive of all branches so total throughput is naturally increased as now nodes can process transactions in parallel, security is not sacrificed through a mechanism of implicit voting (each block points to multiple previous blocks that form the tips of the DAG at the time of block proposal) coupled with the GHOST rule, combined which allow the uncoordinated honest majority of nodes on the network to defeat a coordinated malicious minority [[7]](#r7). 
 
- 
-_Figure 3: From single-chain to block DAG_
+<br />  ![image](Figure_3_[EN].png) <br />
 
 However, the block DAG topology isn’t without its own set of challenges, here are a few, 
 * Ordering convergence
@@ -189,8 +188,7 @@ To ensure that the block DAG reaches rapid convergence amongst nodes, we note th
 
 Here we note that you could remove the need for the initial clustering by simply allowing implicit voting via the block pointers on what each of the proposers think happens to be the heaviest block (analogous with Bmax in GHOSTDAG) at the time of the proposal. This idea was first proposed by the OByte (formerly Byteball) project [[8]](#r8) whereby one of the parents referenced is called the “best parent”. Unlike in OByte, the best parent is not determined by a predefined set of witnesses, but rather by the tool we already have at our disposal, the GHOST rule. 
 
- 
-_Figure 4: Block referencing the heaviest tip calculated via GHOST_
+<br />  ![image](Figure_4_[EN].png) <br />
 
 At any given moment, a node can independently calculate which of the tips on the DAG it observes is the heaviest tip according to a modified version of the GHOST rule. In the original GHOST rule, all pointers are of equal weight. In Taraxa, the weight calculations only involve GHOST pointers – those that the proposing nodes calculated to be the heaviest. The remaining regular pointers are involved in total ordering. This mechanism guarantees an exponential falloff of reordering risk within the block DAG over time, and that different nodes’ view of which blocks are considered the heaviest blocks rapidly converge over time.
 
@@ -198,8 +196,7 @@ Taraxa’s use of Periods (see Section 4.3) help to bound the complexity of the 
 
 From any block on the block DAG by following the heaviest blocks forward (towards the newest blocks), we can construct an Anchor Chain inside the DAG, much like the Main Chain proposed by OByte. 
 
- 
-_Figure 5: Anchor Chain constructed inside the block DAG_
+<br />  ![image](Figure_5_[EN].png) <br />
 
 Here’s a breadth-first algorithm which calculates weights for a yet-to-be-finalized Period, which is executed whenever a new block is being proposed. 
 
@@ -255,9 +252,7 @@ With the Anchor Chain calculated, the heaviest tip in the block DAG is simply th
 
 Total ordering becomes completely deterministic once the Anchor Chain is calculated. Traverse the block DAG starting from the previously-finalized Period Block down the Anchor Chain, and for every Anchor Block, find its parents (excluding the previous Anchor Block) which constitutes an epoch. Topologically sort the epoch with tie breaking via the lowest block hash and keep moving down the Anchor Chain until it has been exhausted. 
 
-
- 
-_Figure 6: Total ordering of block DAG along the Anchor Chain_
+<br />  ![image](Figure_6_[EN].png) <br />
 
 ```
 --------------------------------------------------------------------------------
@@ -308,7 +303,7 @@ Second, transactions contained within different blocks could overlap with one an
 Taraxa implements an algorithm called Fuzzy Sharding which uses cryptographic sortition to efficiently limit block generation as well as define transactional jurisdiction to minimize transaction overlaps. 
 
  
-_Figure 7: Block generation limitation and transaction jurisdiction definition through Fuzzy Sharding_
+<br />  ![image](Figure_7_[EN].png) <br />
 
 To limit block generation, Fuzzy Sharding allows each proposer to independently calculate how many blocks they are eligible to generate. For each new block added to the block DAG, each proposer signs the block hash and then hashes the resulting signature, creating a ticket. This ticket is only valid if it falls below a certain threshold, which is defined by a network parameter and increased (increases the probability of eligibility) by the proposer’s stake (or delegated stake). To mitigate a malicious proposer saving up tickets and then flooding an entire Period with its blocks, these tickets have an expiration of two (2) Periods, in that a ticket generated in P0 is valid for P0 and P1, but not beyond that. They are valid for two Periods just to make sure that at the boundary between Periods, valid tickets are not invalidated due to latency issues on hearing the next confirmed Period Block. These tickets are “virtual”, in that they are not included in any blocks as they could be easily validated by nodes other than the proposer by performing the exact same operation to ensure eligibility of the proposer and, by extension, the validity of the block. 
 
