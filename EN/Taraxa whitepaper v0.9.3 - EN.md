@@ -354,6 +354,149 @@ The machine learning algorithms that govern how these parameters are calculated 
 
 
 
+<br /><br /><br /><br />
+## 5.  Concurrent Smart Contracts 
+
+<br /><br />
+### 5.1 Brief Background
+
+Brief preface: Taraxa’s work on concurrency is inspired by the work of Professor Maurice Herlihy and the pioneering papers [11] [12] on smart contracts and concurrency written under his supervision. Taraxa is fortunate to have Professor Herlihy as our advisor on concurrency and distributed systems technology, and to have had the privilege to collaborate with many of these papers’ authors. 
+
+Blockchain technology began and was popularized by the arrival of Bitcoin, which primarily served as a way for users to conduct transactions without a centralized third party. As blockchain technologies evolved, an additional layer was added between the client and the underlying ledger, often called smart contracts, which is a set of logic that enables more sophisticated applications to be written on top of the blockchain. One of the earliest and most widely-used implementations of such a smart contract system is a core feature of the Ethereum [6] project. For the purposes of this whitepaper, we will primarily use Ethereum as a point of reference when talking about smart contracts. 
+
+A smart contract is similar to an object in a programming language, it has a persistent state (object variables) and a set of functions. Functions could be called directly by a client or by other contracts to alter its own persistent state. In Ethereum, the processing of contracts costs gas, which is paid with ETH, the Ethereum network’s native cryptocurrency. The preferred smart contract programming language in Ethereum is Solidity, which compiles into a Turing-Complete bytecode. 
+
+In Ethereum, every miner pulls in contract calls (and value transfers), orders them into some sequence, process them, record the resultant new states (locally) and pack the contracts’ state transitions into a new block and then publish onto the ledger. Whoever’s proposed block ended up on the longest chain wins and earns the gas fees of the contracts and transactions packed into the block. 
+
+All smart contract processing is performed sequentially in Ethereum. This is most likely an explicit design choice, as many contract calls, if processed in parallel, will result in conflicting accesses to persistent storage. Also given that Solidity is a Turing-complete language, it is not possible statically determine which smart contract calls will lead to conflicts and hence cannot be avoided ahead of time. 
+
+To achieve concurrency, we borrow some techniques from software transactional memory (STM). Most concurrency today is enabled by locking-based techniques, which places a great deal of burden on the developer to make correct design decisions with regards to granularity and minimize lock contention and deadlocks. In fact, this approach towards concurrency tends to become so complex that in practice most developers simply avoid concurrency altogether. STM on the other hand takes the burden off the developer and by optimistically executing transactions in parallel, if a conflict is detected during runtime, the conflicting transaction’s changes are rolled back, and the transaction is re-executed at another time. Finalized non-conflicting changes are then committed to persistent shared storage. 
+
+Compared to typical lock-based techniques, STM is much more easily adopted by coders as no additional effort is required. It also has the added benefit of being able to create atomic operations that are composable [13], making it much easier to collaborate and compose larger applications from smaller ones in a distributed manner. STM’s most obvious drawbacks are the additional coordination overhead incurred by keeping track of shared storage access as well as the cost of rolling back conflicting operations. 
+
+In the context of smart contracts, from past studies [11], we see that at relatively low rates of conflict, STM techniques provides significant performance boosting. In Taraxa, we make multiple modifications to existing EVM (we’re using EVM as our initial step) as well as simulated financially-incentivized low-contention block packing behaviors to further minimize contention. 
+
+<br /><br />
+### 5.2 Speculative Execution 
+
+As it stands today, all smart contract processes are done in sequential order on a single thread. Here we propose a way to process them in parallel, in order to greatly increase the processing throughput of smart contracts. 
+
+There are several obstacles to running smart contracts in parallel. First, because smart contracts modify shared storage (their persistent storage), it’s crucial to keep track of which threads are accessing which areas of storage at any given moment to avoid conflicting access. Second, because the programming language is Turing-complete (e.g., Solidity on Ethereum), it is impossible to determine statically whether the different contracts will produce conflict during parallel execution. 
+
+We propose that the Taraxa full nodes executes the smart contracts’ code as speculative actions. A full node schedules multiple smart contract calls for parallel execution, and then keeps track of their access to persistent storage via the Taraxa runtime APIs. Should there be conflicting access (i.e., read/write, write/write), the access is rejected, the conflict is reported to the scheduler, with the scheduler terminating the thread, rolling back its speculative changes to the persistent storage, and re-schedules these conflicting contract calls for sequential processing. 
+
+Note that this is a highly-simplified version of speculative execution, as it involves the wholesale termination of an entire smart contract execution upon encountering any conflict. This approach is a subset of a more generalized approach whereby specific conflicts are tracked within each contract execution and are held for sequential execution, creating a fork-join schedule that could later be deterministically reproduced. This approach becomes increasingly relevant as smart contracts become increasingly sophisticated and complex. 
+
+The next iteration of Taraxa’s concurrent VM will implement the more generalized case of speculative execution. 
+
+<br /><br />
+### 5.3 Concurrent Schedules
+
+Because contracts are now processed in parallel, it’s important for every node to follow the same concurrent schedule. However, existing STM systems are non-deterministic, which means that even if several different nodes are given the exact same set of transactions and they speculatively execute them independently, they could end up with different concurrent schedules. Different concurrent execution schedules will often result in different end states, thus breaking the ability for nodes to validate each other’s proposed schedules and breaking consensus altogether. To ensure that all executions are perfectly deterministic, the network needs to guarantee that every node follows the exact same concurrent schedule for a given transaction set, which usually comes in the form of a block. This consensus is enforced on the Finalization Chain: right after a Period Block has been finalized, another vote is initiated to reach consensus on the concurrent schedules for every block in the newly-finalized Period, and the resulting set of concurrent schedules are encoded into another block which follows the Period Block finalization block (see Figure 1). This voting process is governed by the same VRF-enabled PBFT process that enables the rapid finalization of the block DAG. 
+
+During Concurrent Schedule discovery, a full node selects a set of smart contracts calls it wishes to process and then executes them in parallel, instantiating a separate VM thread for each call. Throughout the processes, it monitors the Conflict Detector for any alerts it may raise (see Figure 2). If it sees a conflict, the Scheduler then terminates the process running the conflicting transactions and rolls back the changes to the State Log (proxy for persistent storage prior to committing the state changes) they’ve made. It then places the conflicting transactions into the sequential execution queue and executes them after the other parallel processes have completed. Throughout the entire process, smart contracts calls executed in parallel or sequence are recorded into a concurrent schedule S, which is then returned as the Scheduler terminates.
+
+The pseudocode below describes the Concurrent Contract Scheduler run by the representative node to execute contract calls in parallel.
+
+```
+--------------------------------------------------------------------------------
+Algorithm 6: process contracts in parallel
+--------------------------------------------------------------------------------
+Input: A set of smart contracts calls C selected by the representative node
+Output: Commit a set of changes to persistent storage and publish a schedule S for validators to follow
+  1:  function ConcurrentContractScheduler(C): 
+  2:    Initialize the storage conflict detector T
+  3:    Initialize the concurrent schedule log S
+  4:    Initialize a sequential execution queue F
+  5:    Execute all contract transactions c C, watch for alerts from the conflict detector T
+  6:    if T raises alert of conflict on transaction c:
+  7:      Roll back transaction c
+  8:      Place transaction c into F
+  9:    For each successful thread record the execution sequences into S
+  10:   For each transaction f F execute them in sequence and record execution sequence into S
+  11:   return S
+  12: end function
+-------------------------------------------------------------------------------- 
+```
+
+<br /><br />
+### 5.4 Conflict Detector
+
+The Conflict Detector (see Figure 2) tracks all memory access during the speculative executions instantiated by the Scheduler, and reports back conflicts which result in the termination, rollback, and placement of conflicting transactions into a sequential set (see Section 5.3). At the core of the Conflict Detector is a concurrent hashtable data structure which keeps track of all memory being accessed during speculative execution. 
+
+Taraxa uses a linearizable set with an insert(key) operation that inserts key and returns True if key was not present in the data structure, and False otherwise. Keys stored in the set are pairs consisting of contract and storage addresses, which is the level of granularity at which data is loaded and stored in persistent storage.
+
+Each node in the set is augmented with two additional fields: state and txn. The insert(key) function is modified to also accept a txn variable as an argument and return a node in addition to the original Boolean value. The returned node is the node found by insert if key was already present, or the newly-created node that now stores key. Each time a transaction txn wants to access a storage location addr, it must make a call to insert(addr, txn). The state variable can be equal to READ, SHARED, or WRITE, and represents which transactions may access the storage location addr. READ denotes a single reader, SHARED denotes multiple readers, and WRITE denotes a single writer. The READ state may change to either SHARED or WRITE, but once changed, it cannot transition to another state. The txn variable is the hash of the transaction that first accessed addr. 
+
+The pseudocode below for a conflict detector that uses a modified linearizable set as described above. In the following, CAS refers to the compare-and-swap synchronization primitive. In our implementation, we used a C version of the dynamically-resizable concurrent hash table by Lie, Zhang, and Spear [14], a state-of-the-art data structure. As the original Java implementation depends heavily on the native garbage collector, we use the Boehm-Demers-Weiser garbage collector [15] for our implementation.
+
+The pseudocode below describe the Conflict Detector used to track access to persistent storage and report conflicts back to the Scheduler.
+
+```
+--------------------------------------------------------------------------------
+Algorithm 7: READACCESS(addr, txn)
+--------------------------------------------------------------------------------
+Input: Address addr, transaction txn
+Output: Boolean indicating whether there was a conflict
+  1:  function READACCESS(addr, txn):
+  2:    call insert(addr, txn), which return node node.
+  3:    if insert succeeded:
+  4:      return True
+  5:    read node.txn
+  6:    if node.txn is equal to txn:
+  7:      return True
+  8:    read node.state
+  9:    if READ:
+  10:     do CAS(node.state, READ, SHARED)
+  11:     if node.state is READ
+  12:       return True
+  13:     return False
+  14:   else if SHARED:
+  15:     return True
+  16:   return False
+  17: end function
+--------------------------------------------------------------------------------
+```
+
+```
+--------------------------------------------------------------------------------
+Algorithm 8: WRITEACCESS(addr, txn)
+--------------------------------------------------------------------------------
+Input: Address addr, transaction txn
+Output: Boolean indicating whether there was a conflict
+  1:  function WRITEACCESS(addr, txn):
+  2:    call insert(addr, txn), which return node node.
+  3:    if insert succeeded:
+  4:      return True
+  5:    read node.txn
+  6:    if node.txn is equal to txn:
+  7:      read node.state
+  8:      if READ:
+  9:        do CAS(node.state, READ, WRITE)
+  10        if node.state is WRITE:
+  11          return True
+  12        return False
+  13      else if WRITE:
+  14        return True
+  15      return False
+  16    return False
+  17: end function
+--------------------------------------------------------------------------------
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <br /><br /><br /><br />
