@@ -23,12 +23,19 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 
 <br /><br />
 [1. Introduction](#1-introduction)
+
 [2. Review of Existing Projects](#2-Review-of-Existing-Projects)
+
 [3. Taraxa Architecture](#3-Taraxa-Architecture)
+
 [4. Core Consensus](#4-Core-Consensus)
+
 [5.  Concurrent Smart Contracts](#5-Concurrent-Smart-Contracts)
+
 [6. Technical Roadmap](#6-Technical-Roadmap)
+
 [7. Economics](#7-Economics)
+
 
 <br /><br />
 [References](#References)
