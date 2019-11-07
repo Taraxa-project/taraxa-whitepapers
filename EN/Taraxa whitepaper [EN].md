@@ -131,7 +131,7 @@ The Taraxa ledger roughly takes the following architectural approach. More detai
 
 <br />
 ![image](Figure_1_[EN].png)
-<center>_Figure 1: Taraxa Ledger Architecture_</center>
+_Figure 1: Taraxa Ledger Architecture_
 <br />
 
 Taraxa’s core architecture is divided into two parts, a block directed acyclic graph (DAG) at the top and a Finalization Chain at the bottom. 
