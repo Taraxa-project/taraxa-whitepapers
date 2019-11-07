@@ -22,7 +22,7 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 ## Table of Contents
 
 <br /><br />
-[1. Introduction](#1.-introduction)
+[1. Introduction](#1-introduction)
 
 
 <br /><br /><br /><br />
