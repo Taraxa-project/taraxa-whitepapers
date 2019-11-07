@@ -30,6 +30,9 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 [6. Technical Roadmap](#6-Technical-Roadmap)
 [7. Economics](#7-Economics)
 
+<br /><br />
+[References](#References)
+
 
 <br /><br /><br /><br />
 ## 1. Introduction
