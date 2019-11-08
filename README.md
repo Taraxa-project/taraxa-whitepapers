@@ -6,7 +6,7 @@ Each language has its own folder, each folder contains both the whitepaper itsel
 
 We currently have or are working on the following languages. If you'd like to put in your own translation, put in a pull request!  
 
-* English (the authoratative version)
+* [English (the authoratative version)](/EN/Taraxa%20whitepaper%20%5BEN%5D.md)
 * Chinese: (coming soon)
 * Japanese: (coming soon)
 * Korean: (coming soon)
