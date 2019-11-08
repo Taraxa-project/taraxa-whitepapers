@@ -274,7 +274,6 @@ Output: ordering – total ordering of the currently non-finalized Period
 <br /><br />
 ### 4.3 Rapid Finalization
 
-
 In many blockchain networks, finality is a matter of probability. For example, in Bitcoin the convention is to wait for a transaction to be 6 blocks deep [[9]](#r9) (which takes on average 60 minutes) into the chain before accepting it as “finalized”, however the risk of network reordering is never zero, and the exact probabilities depend on how much hash power an assumed attacker is.
 
 This is also true for the block DAG, whereby the reordering risk falls off exponentially but is never truly zero. This may be acceptable for small, coin-only transactions, but often unacceptable for high-valued transactions and especially for smart contracts.
