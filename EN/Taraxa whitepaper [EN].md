@@ -22,7 +22,7 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 <br /><br /><br /><br />
 ## Table of Contents
 
-<br /><br />
+<br />
 [1. Introduction](#1-introduction)
 
 &nbsp;&nbsp;&nbsp;&nbsp;[1.1 The Promise of IoT](#11-The-Promise-of-IoT)
