@@ -51,7 +51,7 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 
 &nbsp;&nbsp;&nbsp;&nbsp;[4.3 Rapid Finalization](#43-Rapid-Finalization)
 
-&nbsp;&nbsp;&nbsp;&nbsp;[4.4 Fair & Efficient Proposals](#44-Fair-&-Efficient-Proposals)
+&nbsp;&nbsp;&nbsp;&nbsp;[4.4 Fair & Efficient Proposals](#44-Fair--Efficient-Proposals)
 
 &nbsp;&nbsp;&nbsp;&nbsp;[4.5 Transaction Jurisdiction](#45-Transaction-Jurisdiction)
 
@@ -69,7 +69,7 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 
 &nbsp;&nbsp;&nbsp;&nbsp;[5.4 Conflict Detector](#54-Conflict-Detector)
 
-&nbsp;&nbsp;&nbsp;&nbsp;[5.5 Ongoing Research & Development](#55-Ongoing-Research-&-Development)
+&nbsp;&nbsp;&nbsp;&nbsp;[5.5 Ongoing Research & Development](#55-Ongoing-Research--Development)
 
 
 [6. Technical Roadmap](#6-Technical-Roadmap)
