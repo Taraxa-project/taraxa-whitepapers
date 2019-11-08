@@ -447,7 +447,7 @@ Output: Commit a set of changes to persistent storage and publish a schedule S f
   7:      Roll back transaction c
   8:      Place transaction c into F
   9:    For each successful thread record the execution sequences into S
-  10:   For each transaction f F execute them in sequence and record execution sequence into S
+  10:   For each transaction f ∈ F execute them in sequence and record execution sequence into S
   11:   return S
   12: end function
 -------------------------------------------------------------------------------- 
