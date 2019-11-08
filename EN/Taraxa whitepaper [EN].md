@@ -24,14 +24,30 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 
 <br /><br />
 [1. Introduction](#1-introduction)
+&nbsp;&nbsp;[1.1 The Promise of IoT](#11-The-Promise-of-IoT)
+&nbsp;&nbsp;[1.2 How Blockchain Technology Could Help](#12-How-Blockchain-Technology-Could-Help)
 
 [2. Review of Existing Projects](#2-Review-of-Existing-Projects)
 
 [3. Taraxa Architecture](#3-Taraxa-Architecture)
+&nbsp;&nbsp;[3.1 Design Principles](#31-Design-Principles)
+&nbsp;&nbsp;[3.2 Ledger Architecture Overview](#32-Ledger-Architecture-Overview)
+&nbsp;&nbsp;[3.3 Concurrent VM Architecture Overview](#33-Concurrent-VM-Architecture-Overview)
 
 [4. Core Consensus](#4-Core-Consensus)
+&nbsp;&nbsp;[4.1 Brief Background](#41-Brief-Background)
+&nbsp;&nbsp;[4.2 Ordering via Anchor Chain](#42-Ordering-via-Anchor-Chain)
+&nbsp;&nbsp;[4.3 Rapid Finalization](#43-Rapid-Finalization)
+&nbsp;&nbsp;[4.4 Fair & Efficient Proposals](#44-Fair-&-Efficient-Proposals)
+&nbsp;&nbsp;[4.5 Transaction Jurisdiction](#45-Transaction-Jurisdiction)
+&nbsp;&nbsp;[4.6 Adaptive Protocol](#46-Adaptive-Protocol)
 
 [5. Concurrent Smart Contracts](#5-Concurrent-Smart-Contracts)
+&nbsp;&nbsp;[5.1 Brief Background](#51-Brief-Background)
+&nbsp;&nbsp;[5.2 Speculative Execution](#52-Speculative-Execution)
+&nbsp;&nbsp;[5.3 Concurrent Schedules](#53-Concurrent-Schedules)
+&nbsp;&nbsp;[5.4 Conflict Detector](#54-Conflict-Detector)
+&nbsp;&nbsp;[5.5 Ongoing Research & Development](#55-Ongoing-Research-&-Development)
 
 [6. Technical Roadmap](#6-Technical-Roadmap)
 
@@ -374,7 +390,7 @@ In both cases, there is no coordination between the nodes on block proposal elig
 
 
 <br /><br />
-### 4.5 Adaptive Protocol
+### 4.6 Adaptive Protocol
 
 Network conditions are constantly changing, and the rules governing protocol behaviors should likewise adapt – automatically – not via offline meetings, online forums, or instant messaging.
 
