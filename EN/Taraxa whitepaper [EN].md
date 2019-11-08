@@ -314,6 +314,30 @@ Note that it is also financially unprofitable to add blocks into the block DAG a
 The algorithm below describes a node's decision-making process while proposing. 
 
 
+```
+--------------------------------------------------------------------------------
+Algorithm 4: block proposal eligibility  
+--------------------------------------------------------------------------------
+Input: period_block_hash - latest period block's hash, level - the level of the block DAG to build on relative to the latest period block, anchor_tip_hash - current anchor chain's tip on the block DAG, difficulty_threshold - the difficulty beyond which the block will no longer have weight in the GHOST rule, no_expected_blocks - number of expected blocks at the current level 
+Output: eligible - whether the node should publish, proof - proof of eligibility
+  1:  function PROPOSALELIGIBILITY (period_block_hash, level, anchor_tip_hash, difficulty_threshold):
+  2:    rnd ← VRF ( S( concatenate( period_block_hash, level)) )
+  3:    difficulty ← ( rnd / MAX_VRF_INTEGER_OUTPUT ) * difficulty_threshold
+  4:    VDF_d ← VDF_function_generator (VDF(), difficulty)
+  5:    output_vdf ← concatenate( anchor_tip_hash, period_block_hash, level)
+  6:    for i = 1 to difficulty
+  7:      output_vdf ← VDF_d (output_vdf)
+  8:      cur_blocks ← most updated number of blocks seen through gossip at the current level
+  9:      if cur_blocks >= no_expected_blocks then
+  10:       eligible ← false
+  11:       proof ← null
+  12:       return (eligible, proof)
+  13:   eligible ← true
+  14:   proof ← (output_vdf, period_block_hash, anchor_tip_hash)
+  15:   return (eligible, proof) 
+  16: end function
+--------------------------------------------------------------------------------
+```
 
 
 <br /><br />
