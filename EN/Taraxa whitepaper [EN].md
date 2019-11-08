@@ -12,7 +12,8 @@ The advancement of IoT ecosystems has been consistently held back by technical c
 In this whitepaper, we introduce Taraxa, a public ledger focused on building trust anchors for IoT ecosystems with the following innovations, 
 
 * Rapidly-finalizing DAG to maximize throughput and minimize inclusion & finalization latency
-* Fuzzy sharding to minimize wasted work and maximize network-wide parallel processing 
+* Fair & efficient proposals to enable a PoS system to produce fair, efficient, and non-coordinated block proposals   
+* Transaction jurisdiction to minimize wasted work and maximize network-wide parallel processing 
 * Speculative concurrency to minimize transaction execution latency
 * Adaptive protocol to help the network learn and adjust its governing parameters on the fly
 * Trustless light nodes that can verify what it’s been told by full nodes 
@@ -133,9 +134,9 @@ The Taraxa ledger roughly takes the following architectural approach. More detai
 
 Taraxa’s core architecture is divided into two parts, a block directed acyclic graph (DAG) at the top and a Finalization Chain at the bottom. 
 
-The block DAG is where blocks are proposed, validated, but not executed. This allows the DAG to grow quickly and decouples block inclusion from finalization and execution, a unique advantage to many stateless IoT use cases. 
+The block DAG is where blocks are proposed, validated, but not executed. This allows the DAG to grow quickly and decouples block inclusion from finalization and execution, a unique advantage to many stateless IoT use cases. The DAG layer provides the vital function of allowing for fast and fair consensus on transaction ordering and solves the blockchain tradeoff between security and fast block creation rate.
 
-The DAG is divided into Periods, bounded by Period Blocks that are finalized through a VRF-enabled PBFT voting process. This voting process is governed by sparse blocks on a separate Finalization Chain. Once a Period Block has been finalized, all blocks belonging between two finalized Period Blocks have deterministic ordering as defined by the GHOST [[4]](#r4) rule. 
+The DAG is divided into Periods, bounded by Period Blocks that are finalized through a VRF-enabled PBFT voting process. This voting process produces a linear chain of ordering and execution commitments in the form of blocks on a separate Finalization Chain. Once a Period Block in the DAG has been finalized, all blocks belonging between two finalized Period Blocks have deterministic ordering. 
 
 <br /><br />
 ### 3.3 Concurrent VM Architecture Overview 
@@ -161,15 +162,15 @@ During validation, the remaining nodes (most nodes that were not part of the con
 
 As the blockchain space matures, pioneering networks such as Bitcoin [[5]](#r5) and Ethereum [[6]](#r6) have run into scalability bottlenecks. One of the key scalability metrics is total network throughput, usually measured by transactions per second (TPS). For single-chain topologies, however, increasing TPS necessarily means a decrease in security, the recovery of which negates any TPS gains. 
 
-To increase TPS, the network could increase block size β and block generation rate γ. Increasing β necessarily increases network delay δ, which in turn reduces the likelihood of nodes all hearing the same information in a timely manner, increasing the likelihood of branching. Increasing γ has the effect of increasing the number of blocks proposed on the network, but since on a single-chain topology only a single block can ever be accepted, more blocks actually increases the options nodes have to make the incorrect bet on the longest chain, also increasing the likelihood of branching. Hence, we see a hard trade off between TPS and security [[4]](#r4).  
+To increase TPS, the network could increase block size β and/or block generation rate γ. Increasing β necessarily increases network delay δ, because a bigger block of data takes longer to transmit. This in turn reduces the timeliness with which all nodes hear about the block, thus increasing the likelihood of branching. Increasing γ has the effect of increasing the number of blocks proposed on the network, but since on a single-chain topology only a single block can ever be accepted, more blocks actually increases the options nodes have to make the incorrect bet on the longest chain, leading to branching. Hence, we see a hard tradeoff between TPS and security [[4]](#r4).   The loss of security is attributable to the fact that while honest nodes are not coordinated, whereas as a malicious adversary can coordinate off-chain to produce a branch-free set of blocks and thus determine the longest chain.   
 
 
 * **βγ ∝ TPS**: block size and block generation increase TPS
 * **β ∝ δ**: block size increase network delay 
 * **δγ ∝ branching**: network delay and block generation increase branching (decreases security)
 
+One elegantly simple approach is to abandon the single-chain approach and adopt an inclusive approach in the form of a DAG [[7]](#r7), or specifically a block DAG. In a block DAG, blocks could be proposed by multiple nodes and they would all be accepted if they were valid. Additionally, unlike in a single-chain topology, each block could reference not just a single parent, but multiple parents – in fact as many parents as the proposing node sees tips in their current view of the DAG. A critical property of such a DAG is that that it removes the hard tradeoff between TPS and security, as the network could reliably increase β without sacrificing security. To see why this is, recall that increasing β would lead to an increase in branching.  However, instead of following the simple longest chain rule of a linear blockchain, the acknowledged parent and tips recorded into each block be used to provide crucial information for block ordering.  Without the additional overhead of voting, the ability for one block to point to another is a de-facto vote that the blocks referenced as parents and tips should be ordered ahead of the new block.  This key property can be combined by the use of the GHOST rule to create an inclusive block protocol that maintains security independent from branching rate [[7]](#r7).    
 
-One elegantly simple approach is to abandon the single-chain approach and adopt an inclusive approach in the form of a DAG [[7]](#r7), or specifically a block DAG. In a block DAG, blocks could be proposed by multiple nodes and they would all be accepted if they were valid. Unlike in a single-chain topology, each block would reference not just a single parent, but multiple parents – in fact as many parents as the proposing node sees as tips of the current DAG. In such a DAG, there isn’t a hard trade off between TPS and security, as the network could reliably increase β without sacrificing security. The block DAG increases β by being naturally inclusive of all branches so total throughput is naturally increased as now nodes can process transactions in parallel, security is not sacrificed through a mechanism of implicit voting (each block points to multiple previous blocks that form the tips of the DAG at the time of block proposal) coupled with the GHOST rule, combined which allow the uncoordinated honest majority of nodes on the network to defeat a coordinated malicious minority [[7]](#r7). 
 
 <br />  ![image](Figure_3_[EN].png) <br />
 
@@ -211,13 +212,13 @@ Output: W – a dictionary of blocks and weights for the current non-finalized P
   2:    current_layer ← S
   3:      while current_layer is not empty:
   4:        for each block in current_layer:
-  5:          parent ← block’s heaviest parent block 
+  5:          parent ← GHOST parent of block  
   6:          if parent does not belong to a finalized Period then 
   7:            if parent is not in parent_layer then
   8:              add parent into parent_layer
   9:              insert parent into W with a weight of 1
   10:            else
-  11:              increment W(parent)’s weight by 1
+  11:              increment W(parent)’s weight by W(block)
   12:        current_layer ← parent_layer
   13:        parent_layer ← {empty set}
   14:   return W
@@ -225,7 +226,7 @@ Output: W – a dictionary of blocks and weights for the current non-finalized P
 --------------------------------------------------------------------------------
 ```
 
-After the weights are calculated for the currently non-finalized Period, the Anchor Chain is constructed from the block DAG. The Anchor Chain is used to later determine total ordering between two Period Blocks, but here it is used to determine the heaviest tip on the block DAG, which is where the Anchor Chain terminates.
+In practice, as blocks are continuously added to the DAG the weights are updated and the Anchor Chain is calculated by the simple traversal of the GHOST path. The Anchor Chain is used to later determine total ordering between two Period Blocks, and the tip of the Anchor Chain is viewed as the block that all honest nodes should build off of, in that a newly proposed block’s ghost pointer will point to the tip of the Anchor Chain. 
 
 Below is an algorithm which determines the Anchor Chain. Here we assume that, unlike a typical DAG, there exist forward pointers from parent to the child block that has a GHOST pointer pointing back to it. In actual implementation such relationships are generated and discarded at runtime. 
 
@@ -249,9 +250,7 @@ Output: anchor_chain – a set (that preserves insertion order) of blocks that f
 --------------------------------------------------------------------------------
 ```
 
-With the Anchor Chain calculated, the heaviest tip in the block DAG is simply the final element of the Anchor Chain, which the newly proposed block will reference with the GHOST pointer.
-
-Total ordering becomes completely deterministic once the Anchor Chain is calculated. Traverse the block DAG starting from the previously-finalized Period Block down the Anchor Chain, and for every Anchor Block, find its parents (excluding the previous Anchor Block) which constitutes an epoch. Topologically sort the epoch with tie breaking via the lowest block hash and keep moving down the Anchor Chain until it has been exhausted. 
+Total ordering, for a given DAG, becomes completely deterministic once the Anchor Chain is calculated. Traverse the block DAG starting from the previously-finalized Period Block down the Anchor Chain, and for every Anchor Block, find its parents (excluding the previous Anchor Block) which constitutes an epoch. Topologically sort the epoch with tie breaking via the lowest block hash and keep moving down the Anchor Chain until it has been exhausted.  
 
 <br />  ![image](Figure_6_[EN].png) <br />
 
@@ -274,17 +273,19 @@ Output: ordering – total ordering of the currently non-finalized Period
 <br /><br />
 ### 4.3 Rapid Finalization
 
-In many blockchain networks, finality is a matter of probability. For example, in Bitcoin the convention is to wait for a transaction to be 6 blocks deep [[9]](#r9) (which takes on average 60 minutes) into the chain before accepting it as “finalized”, however the risk of network reordering is never zero, and the exact probabilities depend on how much hash power an assumed attacker is.
+In many blockchain networks, finality is a matter of probability. For example, in Bitcoin the convention is to wait for a transaction to be 6 blocks deep [[9]](#r9) (which takes on average 60 minutes) into the chain before accepting it as “finalized”, however the risk of network reordering is never zero, and the exact probabilities depend on the assumed hash power of the attacker.  The longest chain rule provides eventual finality, if you wait infinitely long, but not true or instant finality. 
 
-This is also true for the block DAG, whereby the reordering risk falls off exponentially but is never truly zero. This may be acceptable for small, coin-only transactions, but often unacceptable for high-valued transactions and especially for smart contracts.
+This lack of instant true finality also applies for the block DAG, whereby the reordering risk falls off exponentially but at not instant ever becomes zero. This may be acceptable for small, coin-only transactions, but often unacceptable for high-valued transactions and especially for smart contracts. 
 
-Smart contracts (more on Section 5) are logic built on top of the blockchain. Unlike simple coin transfers exhibit only a single behavior – modifying the states of two predefined accounts, a smart contract could (and often do) impact many accounts at once, many of those could themselves be smart contracts and trigger a large-scale cascade of impact. On top of which, many such smart contract implement mechanisms with branching conditions based on previous states – e.g., auctions, trading algorithms. All of this makes having a truly finalized state critically important. 
+Smart contracts (more on Section 5) are logic built on top of the blockchain. Unlike simple coin transfers which exhibit only a single behavior – modifying the states of two predefined accounts, a smart contract could (and often do) impact many accounts at once, many of those could themselves be smart contracts and trigger a large-scale cascade of impact. On top of which, many smart contracts implement mechanisms with branching conditions based on previous states – e.g., auctions and trading algorithms. All of this makes having a truly finalized state critically important. 
 
-To reach fast finalization, we use a VRF-enabled fast PBFT process first proposed by the Algorand [[10]](#r10) project, in which a randomized subset of the network is chosen to cast a vote. Unlike in Algorand and other similar protocols, this vote in Taraxa is far simpler and is asynchronous with block generation. 
+To quickly reach true finalization, we use a VRF-enabled fast PBFT process first proposed by the Algorand [[10]](#r10) project, in which a randomized subset of the network is chosen to cast a vote, through a process of sortition. Unlike in Algorand and other similar protocols, this vote in Taraxa is far simpler and is asynchronous with block generation. 
 
-As the block DAG grows, the network takes successive votes to place infinite weight on a specific Anchor Block, which then becomes a Period Block. The voting result is encoded into a block on the Finalization Chain. This vote is very simple because it is not a vote on the contents or the validity of the block – that has been achieved already when constructing the block DAG by implicit voting through gossiping the block throughout the network – but purely on whether or not this is the Anchor Block that should become a Period Block. A much simpler vote means the voting process is much faster, as there are less assertions to validate among the randomly-selected committee members. Once a Period Block has been finalized, all blocks connected between the new Period Block and the last Period Block now have a deterministically-defined (in other words, finalized) ordering, forming a new Period within the block DAG. 
+As the block DAG grows, the network takes successive votes to place “infinite” weight on a specific Anchor Block, which then becomes a Period Block. The irrevocable commitment of Anchor Block selection by byzantine agreement is thus adapted to GHOST rule by treating the commitment as “infinite” weight, thereby short-circuiting the need to wait an infinite time.  Having committed to an Anchor Block, the finality is instantaneous. The voting result is encoded into blocks on the Finalization Chain (see Figure 1). This vote is very simple because it is not a vote on the contents or the validity of the block – that has been achieved already when constructing the block DAG by implicit voting through gossiping the block throughout the network – but purely on whether or not this is the Anchor Block that should become a Period Block. A much simpler vote means the voting process is much faster, as there are less assertions to validate among the randomly-selected committee members. Once a Period Block has been finalized, all blocks connected between the new Period Block and the last Period Block now have a deterministically-defined (in other words, finalized) ordering, forming a new Period within the block DAG. 
 
-This finalization process is asynchronous to block generation. As the block DAG at the top grows, it is only concerned with transaction inclusion – in fact nodes do not even execute the transactions within the blocks. The block DAG is just for block validation and transaction inclusion and grows completely independently of the finalization and execution process that happens through voting. 
+Encoded inside the blocks on the Finalization Chain are not just the Period Block and their associated votes (multi-signature is on the roadmap) but also a concurrent schedule (see Section 5 for more details) of all transactions within all the blocks included in the Period. A critical function during this process is to also identify overlapping transactions between blocks - for network reliability and security purposes, the overlap cannot be zero - so that they are removed from the aggregate schedule. A transaction is considered overlapping if, after the absolute ordering of the blocks have been established, transactions occurring in a later block has already appeared in an earlier block, then the one in the later block is considered overlapping and removed. The associated fee rewards for processing overlapping transactions are also removed. To further incentivize honest behaviors during block proposals, blocks in the DAG that exceed a certain overlap percentage will not receive block rewards.   
+
+This finalization process is asynchronous to block generation. As the block DAG at the top grows, it is only concerned with transaction inclusion – in fact nodes do not even execute the transactions within the blocks. The block DAG is just for block validation, transaction inclusion, and fair transaction ordering and grows completely independently of the finalization and execution process that happens through voting. 
 
 This decoupling of transaction inclusion vs. finalization & execution has a particularly interesting use case for stateless transactions, often found in applications involving IoT sensor data anchoring. A stateless transaction is one where the transaction has no logical relationship with other transactions, hence no subsequent transactions would depend on such stateless transactions. IoT data anchoring, where an IoT device periodically hash data sets collected over time and commit them into the blockchain, is a stateless transaction. Hence a stateless transaction is only concerned with transaction inclusion, which guarantees that it has made it into the blockchain, and since any amount of subsequent reordering has no impact on their validity, an IoT device has no need to wait for a finalization signal before anchoring another set of data. 
 
@@ -292,13 +293,11 @@ Lastly, having finalized periods across the block DAG effectively caps the compu
 
 
 <br /><br />
-### 4.4 Efficient Proposals
-
-When more than one node could successfully propose blocks as in block DAG, you could run into problems of block efficiency.
+### 4.4 Fair & Efficient Proposals
 
 The first driver of wasted blocks is that there could simply be too many blocks if no rate-limiting mechanisms are in place. Classic blockchain projects like Bitcoin and Ethereum relies on Proof of Work (PoW) as a way to rate-limit block generation, but Taraxa uses a Proof of Stake (PoS) and we believe that the sheer amount of energy expended by PoW is not sustainable or socially responsible – we’d need a non-energy destroying method of limiting block generation rates. 
 
-Taraxa developed an algorithm that drives Efficient Proposals by leveraging Verifiable Random Function (VRF) and Verifiable Delay Function (VDF). VRF was first proposed by Micali et al. [XXXXX]. It is a pseudo-random function which provides a proof of the outputs' correctness. VRFs also have the added property that the output is indistinguishable from a uniform function given an unpredictable input. VDF is a function that is meant to take a prescribed amount of time to compute, is highly resistant to parallel computations (i.e., avoids the hardware arms race of PoW), and whose output is extremely fast to verify. Taraxa makes use of a VDF first described by Wesolowski [YYYYY]. 
+Taraxa developed an algorithm that drives Fair and Efficient Proposals by leveraging Verifiable Random Function (VRF) and Verifiable Delay Function (VDF). VRF was first proposed by Micali et al. [XXXXX]. It is a pseudo-random function which provides a proof of the outputs' correctness. VRFs also have the added property that the output is indistinguishable from a uniform function given an unpredictable input. VDF is a function that is meant to take a prescribed amount of time to compute, is highly resistant to parallel computations (i.e., avoids the hardware arms race of PoW), and whose output is extremely fast to verify. Taraxa makes use of a VDF first described by Wesolowski [YYYYY]. 
 
 <br />  ![image](Figure_7_[EN].png) <br />
 
@@ -340,11 +339,11 @@ Output: eligible - whether the node should publish, proof - proof of eligibility
 
 
 <br /><br />
-### 4.5 Fuzzy Sharding
+### 4.5 Transaction Jurisdiction
 
 The second driver of wasted blocks is that transactions contained within different blocks could overlap with one another, causing redundancy. The most basic strategy to control this is to require that when a block is proposed, it contains none of the transactions included in the tips (parents) it is referencing. The proposer further has no financial incentive to reference older transactions in non-tip blocks as its block would likely either be rejected as malicious, or that these redundant transactions will be pruned during execution and proposer would have received nothing for its efforts. But this basic approach is often not enough if transactions begin to flood the network. 
 
-Taraxa implements an algorithm called Fuzzy Sharding to define transactional jurisdictions for each node when they propose blocks in order to minimize overlap. 
+Taraxa implements an algorithm that defines Transaction Jurisdiction for each node when they propose blocks in order to minimize overlap. 
 
  
 <br />  ![image](Figure_8_[EN].png) <br />
@@ -367,11 +366,12 @@ Output: available_tx – subset of pending transactions this node has jurisdicti
 --------------------------------------------------------------------------------
 ```
 
-Note that the block id of the past Period block and its signature need to be part of the block to act as proof to help other nodes to validate whether the correct jurisdiction has been used. For each such jurisdiction proof generated, it will remain valid for two (2) Periods, for the same reason the block generation eligibility ticket expiration to account for fuzzy boundary conditions between Periods due to propagation latency.
+Note that the block id of the past Period block and its signature need to be part of the block to act as proof to help other nodes to validate whether the correct jurisdiction has been used. For each such jurisdiction proof generated, it will remain valid for two (2) Periods to account for fuzzy boundary conditions between Periods due to propagation latency. 
 
-Also note that, the implicit definition of work load in this algorithm is simply the transaction count. This is a reasonable measure of load during block generation since, in the Taraxa protocol, blocks on the block DAG are not executed immediately means that the load is purely based on validation, which is a relatively simple and equal workload across coin and smart contract transactions.
+Also note that, the implicit definition of work load in this algorithm is simply the transaction count. This is a reasonable measure of load during block generation since, in the Taraxa protocol, blocks on the block DAG are not executed immediately so the resulting computational load is purely based on validation, which is a relatively simple and fixed workload for both coin and smart contract transactions. 
 
 In both cases, there is no coordination between the nodes on block proposal eligibility and transaction jurisdiction and a certain amount of tolerance or “fuzziness” is built into the validation, thereby reducing the associated network overhead and attack surface. 
+
 
 <br /><br />
 ### 4.5 Adaptive Protocol
