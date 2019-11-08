@@ -321,10 +321,10 @@ Algorithm 4: block proposal eligibility
 Input: period_block_hash - latest period block's hash, level - the level of the block DAG to build on relative to the latest period block, anchor_tip_hash - current anchor chain's tip on the block DAG, difficulty_threshold - the difficulty beyond which the block will no longer have weight in the GHOST rule, no_expected_blocks - number of expected blocks at the current level 
 Output: eligible - whether the node should publish, proof - proof of eligibility
   1:  function PROPOSALELIGIBILITY (period_block_hash, level, anchor_tip_hash, difficulty_threshold):
-  2:    rnd ← VRF ( S( concatenate( period_block_hash, level)) )
+  2:    rnd ← VRF (S(concatenate( period_block_hash, level)))
   3:    difficulty ← ( rnd / MAX_VRF_INTEGER_OUTPUT ) * difficulty_threshold
   4:    VDF_d ← VDF_function_generator (VDF(), difficulty)
-  5:    output_vdf ← concatenate( anchor_tip_hash, period_block_hash, level)
+  5:    output_vdf ← concatenate(anchor_tip_hash, period_block_hash, level)
   6:    for i = 1 to difficulty
   7:      output_vdf ← VDF_d (output_vdf)
   8:      cur_blocks ← most updated number of blocks seen through gossip at the current level
@@ -345,35 +345,10 @@ Output: eligible - whether the node should publish, proof - proof of eligibility
 
 The second driver of wasted blocks is that transactions contained within different blocks could overlap with one another, causing redundancy. The most basic strategy to control this is to require that when a block is proposed, it contains none of the transactions included in the tips (parents) it is referencing. The proposer further has no financial incentive to reference older transactions in non-tip blocks as its block would likely either be rejected as malicious, or that these redundant transactions will be pruned during execution and proposer would have received nothing for its efforts. But this basic approach is often not enough if transactions begin to flood the network. 
 
-To address the proposal 
-
-
-Taraxa implements an algorithm called Fuzzy Sharding which uses cryptographic sortition to efficiently limit block generation as well as define transactional jurisdiction to minimize transaction overlaps. 
+Taraxa implements an algorithm called Fuzzy Sharding to define transactional jurisdictions for each node when they propose blocks in order to minimize overlap. 
 
  
-<br />  ![image](Figure_7_[EN].png) <br />
-
-To limit block generation, Fuzzy Sharding allows each proposer to independently calculate how many blocks they are eligible to generate. For each new block added to the block DAG, each proposer signs the block hash and then hashes the resulting signature, creating a ticket. This ticket is only valid if it falls below a certain threshold, which is defined by a network parameter and increased (increases the probability of eligibility) by the proposer’s stake (or delegated stake). To mitigate a malicious proposer saving up tickets and then flooding an entire Period with its blocks, these tickets have an expiration of two (2) Periods, in that a ticket generated in P0 is valid for P0 and P1, but not beyond that. They are valid for two Periods just to make sure that at the boundary between Periods, valid tickets are not invalidated due to latency issues on hearing the next confirmed Period Block. These tickets are “virtual”, in that they are not included in any blocks as they could be easily validated by nodes other than the proposer by performing the exact same operation to ensure eligibility of the proposer and, by extension, the validity of the block. 
-
-Here’s the simple ticket calculation algorithm and is easily validated by another node observer.
-
-```
---------------------------------------------------------------------------------
-Algorithm 4: calculate the tickets available for the current Period
---------------------------------------------------------------------------------
-Input: T – set of blocks from the previous finalized and the current non-finalized Period, threshold – threshold under which the ticket is a winner, stake – proposer’s coin stake, β – threshold modifier 
-Output: winners – dictionary list of winning tickets 
-  1:  function FINDWINNINGTICKETS (T, threshold, stake, β):
-  2:    for each block in T:
-  3:      ticket ← hash of the node’s signature of the block’s ID
-  4:      if ticket < threshold · stake · β then 
-  5:        add (block, ticket) to winners
-  6:    return winners
-  7:  end function
---------------------------------------------------------------------------------
-```
-
-Note that in Algorithm 4, the threshold modifier β should be positively-correlated with the maximum hash and negatively-correlated with the total number of coins.
+<br />  ![image](Figure_8_[EN].png) <br />
 
 To define transaction jurisdiction, a proposer follows an algorithm that places it into a specific range of transaction addresses (or accounts) for which it has jurisdiction over. In other words, the proposer is only eligible to pack transactions from addresses within its jurisdiction into a new block. A proposer first signs an Anchor Block and then hashes the signature, receiving a certificate. This certificate is then mapped into the pool of pending transactions to see which ones the current node is eligible for. This could be done via a simple modulus operation, for example, as described in the simple algorithm below. 
 
