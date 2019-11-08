@@ -297,7 +297,7 @@ Lastly, having finalized periods across the block DAG effectively caps the compu
 
 The first driver of wasted blocks is that there could simply be too many blocks if no rate-limiting mechanisms are in place. Classic blockchain projects like Bitcoin and Ethereum relies on Proof of Work (PoW) as a way to rate-limit block generation, but Taraxa uses a Proof of Stake (PoS) and we believe that the sheer amount of energy expended by PoW is not sustainable or socially responsible – we’d need a non-energy destroying method of limiting block generation rates. 
 
-Taraxa developed an algorithm that drives Fair and Efficient Proposals by leveraging Verifiable Random Function (VRF) and Verifiable Delay Function (VDF). VRF was first proposed by Micali et al. [XXXXX]. It is a pseudo-random function which provides a proof of the outputs' correctness. VRFs also have the added property that the output is indistinguishable from a uniform function given an unpredictable input. VDF is a function that is meant to take a prescribed amount of time to compute, is highly resistant to parallel computations (i.e., avoids the hardware arms race of PoW), and whose output is extremely fast to verify. Taraxa makes use of a VDF first described by Wesolowski [YYYYY]. 
+Taraxa developed an algorithm that drives Fair and Efficient Proposals by leveraging Verifiable Random Function (VRF) and Verifiable Delay Function (VDF). VRF was first proposed by Micali et al. [[11]](#r11). It is a pseudo-random function which provides a proof of the outputs' correctness. VRFs also have the added property that the output is indistinguishable from a uniform function given an unpredictable input. VDF is a function that is meant to take a prescribed amount of time to compute, is highly resistant to parallel computations (i.e., avoids the hardware arms race of PoW), and whose output is extremely fast to verify. Taraxa makes use of a VDF first described by Wesolowski [[12]](#r12). 
 
 <br />  ![image](Figure_7_[EN].png) <br />
 
@@ -394,7 +394,7 @@ The machine learning algorithms that govern how these parameters are calculated 
 <br /><br />
 ### 5.1 Brief Background
 
-Brief preface: Taraxa’s work on concurrency is inspired by the work of Professor Maurice Herlihy and the pioneering papers [[11]](#r11) [[12]](#r12) on smart contracts and concurrency written under his supervision. Taraxa is fortunate to have Professor Herlihy as our advisor on concurrency and distributed systems technology, and to have had the privilege to collaborate with many of these papers’ authors. 
+Brief preface: Taraxa’s work on concurrency is inspired by the work of Professor Maurice Herlihy and the pioneering papers [[13]](#r13) [[14]](#r14) on smart contracts and concurrency written under his supervision. Taraxa is fortunate to have Professor Herlihy as our advisor on concurrency and distributed systems technology, and to have had the privilege to collaborate with many of these papers’ authors. 
 
 Blockchain technology began and was popularized by the arrival of Bitcoin, which primarily served as a way for users to conduct transactions without a centralized third party. As blockchain technologies evolved, an additional layer was added between the client and the underlying ledger, often called smart contracts, which is a set of logic that enables more sophisticated applications to be written on top of the blockchain. One of the earliest and most widely-used implementations of such a smart contract system is a core feature of the Ethereum [[6]](#r6) project. For the purposes of this whitepaper, we will primarily use Ethereum as a point of reference when talking about smart contracts. 
 
@@ -408,7 +408,7 @@ To achieve concurrency, we borrow some techniques from software transactional me
 
 Compared to typical lock-based techniques, STM is much more easily adopted by coders as no additional effort is required. It also has the added benefit of being able to create atomic operations that are composable [[13]](#r13), making it much easier to collaborate and compose larger applications from smaller ones in a distributed manner. STM’s most obvious drawbacks are the additional coordination overhead incurred by keeping track of shared storage access as well as the cost of rolling back conflicting operations. 
 
-In the context of smart contracts, from past studies [[11]](#r11), we see that at relatively low rates of conflict, STM techniques provides significant performance boosting. In Taraxa, we make multiple modifications to existing EVM (we’re using EVM as our initial step) as well as simulated financially-incentivized low-contention block packing behaviors to further minimize contention. 
+In the context of smart contracts, from past studies [[13]](#r13), we see that at relatively low rates of conflict, STM techniques provides significant performance boosting. In Taraxa, we make multiple modifications to existing EVM (we’re using EVM as our initial step) as well as simulated financially-incentivized low-contention block packing behaviors to further minimize contention. 
 
 <br /><br />
 ### 5.2 Speculative Execution 
@@ -582,12 +582,16 @@ A more comprehensive description of the ecosystem’s economic design will be pu
 
 <a id="r10">[10]</a> J. Chen and S. Micali, "ALGORAND," 26 May 2017. [Online]. Available: https://algorandcom.cdn.prismic.io/algorandcom%2Fece77f38-75b3-44de-bc7f-805f0e53a8d9_theoretical.pdf. [Accessed 30 April 2019].
 
-<a id="r11">[11]</a> T. Dickerson, P. Gazzillo, M. Herlihy and E. Koskinen, "Adding concurrency to smart contracts," in ACM Symposium on Principles of Distributed Computing, 2017. 
+<a id="r10">[11]</a> S. Micali, M. Rabin and S. Vadhan, "Verifiable Random Functions," in 40th Foundations of Computer Science (FOCS), New York, Oct 1999. 
 
-<a id="r12">[12]</a> V. Saraph and M. Herlihy, "An Empirical Study of Speculative Concurrency in Ethereum Smart Contracts," arXiv.org, vol. Computer Science, no. Distributed, Parallel, and Cluster Computing, p. arXiv:1901.01376, 2019. 
+<a id="r10">[12]</a> B. Wesolowski. Efficient verifiable delay functions. Cryptology ePrint Archive, Report 2018/623, 2018. https://eprint.iacr.org/2018/623.
 
-<a id="r13">[13]</a> T. Harris, S. Marlow, S. P. Jones and M. Herlihy, "Composable Memory Transactions," in PPoPP, Chicago, 2005. 
+<a id="r11">[13]</a> T. Dickerson, P. Gazzillo, M. Herlihy and E. Koskinen, "Adding concurrency to smart contracts," in ACM Symposium on Principles of Distributed Computing, 2017. 
 
-<a id="r14">[14]</a> Y. Liu, K. Zhang and M. Spear, "Dynamic-sized nonblocking hash tables," in Proceedings of the 2014 ACM symposium on Principles of distributed computing, Paris, 2014. 
+<a id="r12">[14]</a> V. Saraph and M. Herlihy, "An Empirical Study of Speculative Concurrency in Ethereum Smart Contracts," arXiv.org, vol. Computer Science, no. Distributed, Parallel, and Cluster Computing, p. arXiv:1901.01376, 2019. 
 
-<a id="r15">[15]</a> H.-J. Boehm, "A garbage collector for C and C++," [Online]. Available: http://www.hboehm.info/gc/.
+<a id="r13">[15]</a> T. Harris, S. Marlow, S. P. Jones and M. Herlihy, "Composable Memory Transactions," in PPoPP, Chicago, 2005. 
+
+<a id="r14">[16]</a> Y. Liu, K. Zhang and M. Spear, "Dynamic-sized nonblocking hash tables," in Proceedings of the 2014 ACM symposium on Principles of distributed computing, Paris, 2014. 
+
+<a id="r15">[17]</a> H.-J. Boehm, "A garbage collector for C and C++," [Online]. Available: http://www.hboehm.info/gc/.
