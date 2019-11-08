@@ -1,4 +1,4 @@
-# Taraxa Whitepaper
+# Taraxa Whitepapers
 
 This is the repository for Taraxa's whitepaper and other technical publications. All translated versions will also be hosted here as they become available. 
 
