@@ -624,16 +624,16 @@ A more comprehensive description of the ecosystem’s economic design will be pu
 
 <a id="r10">[10]</a> J. Chen and S. Micali, "ALGORAND," 26 May 2017. [Online]. Available: https://algorandcom.cdn.prismic.io/algorandcom%2Fece77f38-75b3-44de-bc7f-805f0e53a8d9_theoretical.pdf. [Accessed 30 April 2019].
 
-<a id="r10">[11]</a> S. Micali, M. Rabin and S. Vadhan, "Verifiable Random Functions," in 40th Foundations of Computer Science (FOCS), New York, Oct 1999. 
+<a id="r11">[11]</a> S. Micali, M. Rabin and S. Vadhan, "Verifiable Random Functions," in 40th Foundations of Computer Science (FOCS), New York, Oct 1999. 
 
-<a id="r10">[12]</a> B. Wesolowski. Efficient verifiable delay functions. Cryptology ePrint Archive, Report 2018/623, 2018. https://eprint.iacr.org/2018/623.
+<a id="r12">[12]</a> B. Wesolowski. Efficient verifiable delay functions. Cryptology ePrint Archive, Report 2018/623, 2018. https://eprint.iacr.org/2018/623.
 
-<a id="r11">[13]</a> T. Dickerson, P. Gazzillo, M. Herlihy and E. Koskinen, "Adding concurrency to smart contracts," in ACM Symposium on Principles of Distributed Computing, 2017. 
+<a id="r13">[13]</a> T. Dickerson, P. Gazzillo, M. Herlihy and E. Koskinen, "Adding concurrency to smart contracts," in ACM Symposium on Principles of Distributed Computing, 2017. 
 
-<a id="r12">[14]</a> V. Saraph and M. Herlihy, "An Empirical Study of Speculative Concurrency in Ethereum Smart Contracts," arXiv.org, vol. Computer Science, no. Distributed, Parallel, and Cluster Computing, p. arXiv:1901.01376, 2019. 
+<a id="r14">[14]</a> V. Saraph and M. Herlihy, "An Empirical Study of Speculative Concurrency in Ethereum Smart Contracts," arXiv.org, vol. Computer Science, no. Distributed, Parallel, and Cluster Computing, p. arXiv:1901.01376, 2019. 
 
-<a id="r13">[15]</a> T. Harris, S. Marlow, S. P. Jones and M. Herlihy, "Composable Memory Transactions," in PPoPP, Chicago, 2005. 
+<a id="r15">[15]</a> T. Harris, S. Marlow, S. P. Jones and M. Herlihy, "Composable Memory Transactions," in PPoPP, Chicago, 2005. 
 
-<a id="r14">[16]</a> Y. Liu, K. Zhang and M. Spear, "Dynamic-sized nonblocking hash tables," in Proceedings of the 2014 ACM symposium on Principles of distributed computing, Paris, 2014. 
+<a id="r16">[16]</a> Y. Liu, K. Zhang and M. Spear, "Dynamic-sized nonblocking hash tables," in Proceedings of the 2014 ACM symposium on Principles of distributed computing, Paris, 2014. 
 
-<a id="r15">[17]</a> H.-J. Boehm, "A garbage collector for C and C++," [Online]. Available: http://www.hboehm.info/gc/.
+<a id="r17">[17]</a> H.-J. Boehm, "A garbage collector for C and C++," [Online]. Available: http://www.hboehm.info/gc/.
