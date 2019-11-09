@@ -79,6 +79,9 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 [7. Economics](#7-Economics)
 
 
+[8. Governance](#8-Governance)
+
+
 
 <br /><br />
 [References](#References)
@@ -596,6 +599,14 @@ The Taraxa token, a native token of the layer 1 Taraxa ledger, is used as a mean
 A more comprehensive description of the ecosystem’s economic design will be published later and its summary will be integrated into this whitepaper. 
 
 
+
+
+
+
+<br /><br /><br /><br />
+## 8. Governance 
+
+xxxx
 
 
 
