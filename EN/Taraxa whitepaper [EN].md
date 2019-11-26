@@ -633,7 +633,7 @@ The target tokens distribution will be as follows,
 
 <br /><br />
 ### 7.3 Token Utility
-<br /><br />
+<br />
 
 **Transaction Fees**
 
