@@ -800,7 +800,7 @@ The council will vote on decisions that impact all aspects of the Taraxa network
 
 **Council Election**
 
-The council will be elected via a single transferable vote (STV) system, with the number of votes determined by the number of Taraxa tokens held by each voter with a bonding time modifier (see below). This is a widely used voting system to achieve proportional representation through ranked voting for multi-seat organizations. Here’s a simple description of the STV system with a Droop quota. More details can be found here. 
+The council will be elected via a single transferable vote (STV) system, with the number of votes determined by the number of Taraxa tokens held by each voter with a bonding time modifier (see below). This is a widely used voting system to achieve proportional representation through ranked voting for multi-seat organizations. Here’s a simple description of the STV system with a Droop quota. 
 <br />
 
 _Premises_
