@@ -716,6 +716,7 @@ The mechanism is simple: the ratio will be decreased to trigger an exponential i
 
 
 Rewards in Taraxa are made up of three components: block rewards, transaction fees, and storage rental. 
+<br /><br />
 
 **Block Rewards**
 
@@ -798,7 +799,7 @@ _Premises_
 * V valid votes are cast
 * T is the minimum threshold of votes necessary to win any given seat, with T = ceil (valid votes cast / (seats to fill + 1))
 
-<br /><br />
+<br />
 
 _Voting steps_
 
