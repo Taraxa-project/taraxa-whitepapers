@@ -633,12 +633,12 @@ The target tokens distribution will be as follows,
 
 <br /><br />
 ### 7.3 Token Utility
-<br />
+<br /><br />
 
 **Transaction Fees**
 
 Token holders may use the token to initiate and pay for the cost of processing transactions, these transaction fees are paid to the validators of the network. More on transaction fees in the Rewards section.
-<br />
+<br /><br />
 
 
 **Validator Eligibility**
@@ -646,7 +646,7 @@ Token holders may use the token to initiate and pay for the cost of processing t
 Token holders may choose to stake their tokens via bonding to become an eligible validator of the network, responsible for processing the network’s transactions and maintaining the network’s overall security and integrity.
 
 To become a validator, a fixed number of Taraxa tokens will need to be staked. Since the total token supply in the network is fixed, the maximum number of validators is also fixed. These rules will be set at network launch and are subject to change per stakeholders’ voting.
-<br />
+<br /><br />
 
 
 **DApp Storage**
@@ -654,7 +654,6 @@ To become a validator, a fixed number of Taraxa tokens will need to be staked. S
 Token holders may choose to stake their tokens via bonding to receive a corresponding amount of storage on the network. This is meant to reflect the ongoing operational cost of validators having to replicate and store the full state (and potentially the full state history) of the network and discourage users from wantonly storing an excessive amount of data onto the network.
 
 Each staked Taraxa token will correspond to a fixed number of bytes of eligible storage on the Taraxa network, governed by a (token : storage) ratio. Although the maximum number of tokens in the Taraxa network is capped, the maximum storage will be increased by the network automatically reducing the ratio should the staking rate go beyond the targeted staking rate (see the Staking section).
-<br />
 
 
 
@@ -664,24 +663,24 @@ Each staked Taraxa token will correspond to a fixed number of bytes of eligible 
 
 Staking is a mechanism for stakeholders to signal their commitment to help maintain and grow the Taraxa network, and they are rewarded (see Rewards section) accordingly. 
 To stake, the stakeholder needs to bond Taraxa tokens for a period, in return gaining additional weight in voting in governance-related decisions and become eligible to participate in the Taraxa network’s consensus process and earning rewards.
-<br />
+<br /><br />
 
 **Staking Period**
 
 For simplicity, the staking period will be based on a fixed timeframe to be determined at network launch. The actual timeframe (as all time-related metrics) are governed by the number of Periods elapsed on the Taraxa network. 
 
 At network launch there may a special set of launch nodes that have a longer staking period with greater rewards. Details are to be determined.
-<br />
+<br /><br />
 
 **Staking via Bonding**
 
 Bonding of Taraxa tokens is needed in staking in order to provide stable expectations for eligibility. To bond a token is to lock a token into a fixed period of time (as determined by the number of Periods on chain), during which the bonded token is not tradeable or usable – besides granting the privileges in validation eligibility and access to current state storage on the network.
-<br />
+<br /><br />
 
 **Stake Delegation**
 
 Not everyone who wishes to help secure the Taraxa network wishes to deal with the actual operational details of running a node. These stakeholders can choose to bond their stake and then delegate it to another entity to operate a node on its behalf. How the proceeds from the stake are divide are negotiated between the stakeholder and the node operator.
-<br /> 
+<br /><br />
 
 **Stake Alterations**
 
@@ -690,7 +689,7 @@ When a stakeholder wishes to bond or withdraw (at the end of the staking period)
 The first consideration is security. Because staking endows critical privileges on the network, namely the right to validate transactions, it is critical that the network has full understanding for eligibility. The network and the community need to be given ample time to note any such changes and be confident in their determination of any changes in eligibility resulting from the staking alterations. 
 
 The second consideration is economic. When large quantities of tokens are either added or removed from the staking pool, it could have an impact on the secondary markets for both the tokens themselves as well as the storage rentals (i.e., those with bonded stakes could rent out the storage they’re entitled to DApp developers). Having a buffer period will give the community ample notice to react to the change.
-<br />
+<br /><br />
 
 **Target Staking Rate**
 
@@ -699,7 +698,7 @@ The network will have a target staking rate the entire token supply to be determ
 The target staking rate will be significantly higher than 50%, the exact number will be determined at network launch. 
 
 To incentivize the community to reach the target staking rate, a progressively increasing block reward will be doled out, reaching a maximum reward per block at the target staking rate. To put it simply, if the current staking rate is less than the target staking rate, the block reward is given by a linearly increasing line trending upward until it reaches the target staking rate, beyond which the reward remains constant (flat line).
-<br />
+<br /><br />
 
 **Storage Scaling**
 
@@ -708,7 +707,6 @@ As the network starts to exceed the target staking rate, the amount of available
 The idea behind this increase is that, because the community would have no increasing marginal incentive to stake beyond the target staking rate as far as block reward is concerned, then such an increase is most likely driven by a lack of storage as demanded by increasing DApp activity on the network. Hence maximum storage is increased to address this scarcity.
 
 The mechanism is simple: the ratio will be decreased to trigger an exponential increase in the maximum amount of storage available on the network. For staking ranges less than the target staking rate, the maximum storage is constant (flat line). 
-
 
 
 
@@ -729,7 +727,7 @@ Block rewards are dispersed to staked validators following the successful comple
 * Proposing valid consensus blocks on the PBFT chain
 
 Since all participation are randomly with fairness guaranteed by a combination of VRF and VDF, all eligible staked nodes operating in good faith will have an equal chance of being rewarded.
-<br />
+<br /><br />
 
 **Transaction Fees**
 
@@ -744,14 +742,14 @@ Because of the very low maximum throughput in systems such as BTC and ETH, these
 Just like block rewards, fees are going to be dispersed to staked validators for the same following the successful completion of these activities, 
 * Proposing valid blocks in the Block DAG
 * Proposing valid consensus blocks on the PBFT chain
-<br />
+<br /><br />
 
 **Storage Rental**
 
 Since staked tokens not only grants eligibility to become a validator, it also grants rights to store a certain amount of data on the network, those who have staked tokens could lease this privilege to DApp developers and generate rental income. 
 
 This incidentally creates an additional stream of income for those who have staked tokens to become validators. Storage lessors and renters could easily be matched on a secondary market to ensure pricing efficiency.
-<br />
+<br /><br />
 
 **No Slashing**
 
