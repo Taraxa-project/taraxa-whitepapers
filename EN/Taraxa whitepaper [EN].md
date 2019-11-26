@@ -613,8 +613,9 @@ The target tokens distribution will be as follows,
 
 <br />
 
-| Private sales		| 24.1%	|
+| Distribution		| %		|
 | :----------------	| ----:	|
+| Private sales		| 24.1%	|
 | Public sales		| 23.4% |
 | Team 				| 15% 	|
 | Block rewards		| 15% 	|
