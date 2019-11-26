@@ -635,23 +635,26 @@ The target tokens distribution will be as follows,
 ### 7.3 Token Utility
 
 
-1.	Transaction Fees
+**Transaction Fees**
 
-Token holders may use the token to initiate and pay for the cost of processing transactions, these transaction fees are paid to the validators of the network. More on transaction fees in the Rewards section. 
+Token holders may use the token to initiate and pay for the cost of processing transactions, these transaction fees are paid to the validators of the network. More on transaction fees in the Rewards section.
+<br />
 
 
-2.	Validator Eligibility
+**Validator Eligibility**
 
 Token holders may choose to stake their tokens via bonding to become an eligible validator of the network, responsible for processing the network’s transactions and maintaining the network’s overall security and integrity.
 
-To become a validator, a fixed number of Taraxa tokens will need to be staked. Since the total token supply in the network is fixed, the maximum number of validators is also fixed. These rules will be set at network launch and are subject to change per stakeholders’ voting. 
+To become a validator, a fixed number of Taraxa tokens will need to be staked. Since the total token supply in the network is fixed, the maximum number of validators is also fixed. These rules will be set at network launch and are subject to change per stakeholders’ voting.
+<br />
 
 
-3.	DApp Storage
+**DApp Storage**
 
 Token holders may choose to stake their tokens via bonding to receive a corresponding amount of storage on the network. This is meant to reflect the ongoing operational cost of validators having to replicate and store the full state (and potentially the full state history) of the network and discourage users from wantonly storing an excessive amount of data onto the network.
 
-Each staked Taraxa token will correspond to a fixed number of bytes of eligible storage on the Taraxa network, governed by a (token : storage) ratio. Although the maximum number of tokens in the Taraxa network is capped, the maximum storage will be increased by the network automatically reducing the ratio should the staking rate go beyond the targeted staking rate (see the Staking section). 
+Each staked Taraxa token will correspond to a fixed number of bytes of eligible storage on the Taraxa network, governed by a (token : storage) ratio. Although the maximum number of tokens in the Taraxa network is capped, the maximum storage will be increased by the network automatically reducing the ratio should the staking rate go beyond the targeted staking rate (see the Staking section).
+<br />
 
 
 
