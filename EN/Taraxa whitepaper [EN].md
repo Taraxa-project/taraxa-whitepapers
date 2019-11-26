@@ -601,7 +601,7 @@ Note: this is a **_preliminary outline_** of the overall intent for the Taraxa n
 <br /><br />
 ### 7.1 Token Supply 
 
-The overall Taraxa token supply is 2<sup>53</sup> – 1 = 9007199254740991 tokens, with all tokens minted in the genesis block at network launch. 
+The overall Taraxa token supply is 2<sup>53</sup> – 1 = 9007199254740991 tokens, with all tokens minted in the genesis block at network launch. This number was chosen because it is the largest safe integer in javascript. 
 
 This number may seem big, but we are simply expanding the number of tokens into its smallest units. For example, BTC has a total supply of 21 million tokens, but each BTC token is divisible into a further 100 million Satoshis, which means the effective supply is 2100000000000000 total Satoshis, which is approximately 2<sup>50.899311</sup>, which is on the same order of magnitude (within 1dB) as Taraxa’s tokens. 
 
@@ -613,12 +613,13 @@ The target tokens distribution will be as follows,
 
 <br />
 
-| Private sales | 24.1% |
-| Public sales | 23.4% |
-| Team | 15% |
-| Block rewards | 15% |
-| Foundation | 20% |
-| Community grants | 2.5% |
+| Private sales		| 24.1%	|
+| -----------------	| -----	|
+| Public sales		| 23.4% |
+| Team 				| 15% 	|
+| Block rewards		| 15% 	|
+| Foundation		| 20%	|
+| Community grants	| 2.5%	|
 
 <br />
 
@@ -700,7 +701,7 @@ Block rewards are meant to incentivize stakeholders to help secure the network b
 Within any given Period, each block receives the same quantity of tokens as block rewards, as determined by the target staking rate at the end of each Period. See target staking rate for more details. 
 A total 15% of the token supply is allocated to block rewards. 
 Block rewards are dispersed to staked validators following the successful completion of these activities,
-•	Proposing valid blocks in the Block DAG
+* Proposing valid blocks in the Block DAG
 •	Proposing valid consensus blocks on the PBFT chain
 
 Since all participation are randomly with fairness guaranteed by a combination of VRF and VDF, all eligible staked nodes operating in good faith will have an equal chance of being rewarded. 
