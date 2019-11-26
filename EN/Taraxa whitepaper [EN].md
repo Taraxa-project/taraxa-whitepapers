@@ -702,6 +702,7 @@ To incentivize the community to reach the target staking rate, a progressively i
 <br />
 
 **Storage Scaling**
+
 As the network starts to exceed the target staking rate, the amount of available storage on the network will be dynamically adjusted to expand the maximum available storage. Exceeding the target staking rate triggers a decrease in the (token / storage) ratio.
 
 The idea behind this increase is that, because the community would have no increasing marginal incentive to stake beyond the target staking rate as far as block reward is concerned, then such an increase is most likely driven by a lack of storage as demanded by increasing DApp activity on the network. Hence maximum storage is increased to address this scarcity.
@@ -718,6 +719,7 @@ The mechanism is simple: the ratio will be decreased to trigger an exponential i
 Rewards in Taraxa are made up of three components: block rewards, transaction fees, and storage rental. 
 
 **Block Rewards**
+
 Block rewards are meant to incentivize stakeholders to help secure the network by participating in validation by driving up the overall network’s staking rate. This is especially important in the early days of the network where fees may not meet node operators’ ROI expectations.
 
 Within any given Period, each block receives the same quantity of tokens as block rewards, as determined by the target staking rate at the end of each Period. See target staking rate for more details. 
@@ -730,11 +732,13 @@ Since all participation are randomly with fairness guaranteed by a combination o
 <br />
 
 **Transaction Fees**
+
 Taraxa will make use of the same first-price auction mechanism currently being used in BTC, ETH, and almost all other blockchain systems. 
 
 The primary criticism against the fees in classic systems such as BTC and ETH are that, they are 1) too high, and 2) too volatile. However, these symptoms are primarily driven not by the pricing mechanism itself, but rather by the throughput limitations of these networks. To put it simply, if the system is not at its maximum throughput limit, the block proposer has no incentive to prioritize between which pending transactions to include in a block – they’d simply place all available (and eligible) pending transactions into the next block. 
 
 As a sidebar, this isn’t entirely true in practice, as the network propagation speed consideration during competitive mining could adversely impact inclusion as well. In the Taraxa network however, there is no competition between the staking nodes so this adverse incentive should not exist. 
+
 Because of the very low maximum throughput in systems such as BTC and ETH, these networks are almost always operating at their maximum throughput, forcing users into constantly paying premiums to be included in blocks earlier, driving up both fee prices as well as fee volatility. In a far higher-throughput system such as Taraxa, we expect this to be far less of a consideration. 
 
 Just like block rewards, fees are going to be dispersed to staked validators for the same following the successful completion of these activities, 
@@ -743,12 +747,14 @@ Just like block rewards, fees are going to be dispersed to staked validators for
 <br />
 
 **Storage Rental**
+
 Since staked tokens not only grants eligibility to become a validator, it also grants rights to store a certain amount of data on the network, those who have staked tokens could lease this privilege to DApp developers and generate rental income. 
 
 This incidentally creates an additional stream of income for those who have staked tokens to become validators. Storage lessors and renters could easily be matched on a secondary market to ensure pricing efficiency.
 <br />
 
 **No Slashing**
+
 Taraxa will not implement a slashing or punishment mechanisms at this moment. 
 
 It is incredibly difficult to design economic incentive schemes that properly motivate players in a system to behave in ways that are deemed constructive. As a rule, such mechanisms need to be as simple as possible, as more complexity creates more opportunities to game these mechanisms. 
