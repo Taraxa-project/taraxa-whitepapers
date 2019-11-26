@@ -78,6 +78,16 @@ In this whitepaper, we introduce Taraxa, a public ledger focused on building tru
 
 [7. Economics](#7-Economics)
 
+&nbsp;&nbsp;&nbsp;&nbsp;[7.1 Token Supply](#71-Token-Supply)
+
+&nbsp;&nbsp;&nbsp;&nbsp;[7.2 Token Distribution](#72-Token-Distribution)
+
+&nbsp;&nbsp;&nbsp;&nbsp;[7.3 Token Utility](#73-Token-Utility)
+
+&nbsp;&nbsp;&nbsp;&nbsp;[7.4 Staking](#74-Staking)
+
+&nbsp;&nbsp;&nbsp;&nbsp;[7.5 Rewards](#75-Rewards)
+
 
 [8. Governance](#8-Governance)
 
